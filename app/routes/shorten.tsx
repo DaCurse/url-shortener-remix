@@ -1,37 +1,52 @@
 import { nanoid } from 'nanoid'
-import { ActionFunction, Form, useActionData } from 'remix'
+import { useEffect, useRef } from 'react'
+import { ActionFunction, Form, useActionData, useTransition } from 'remix'
 import { z } from 'zod'
 import prisma from '~/db.server'
 
-const ActionDataSchema = z.object({
+const FormDataSchema = z.object({
   url: z.string().url(),
 })
 
-export const action: ActionFunction = async ({ request }) => {
+type ActionData = { code?: string; errors?: string[] }
+
+export const action: ActionFunction = async ({
+  request,
+}): Promise<ActionData> => {
   const formData = await request.formData()
-  // TODO: Handle zod error
-  const { url } = ActionDataSchema.parse(Object.fromEntries(formData))
+  const result = FormDataSchema.safeParse(Object.fromEntries(formData))
+  if (!result.success) {
+    return { errors: result.error.issues.map(i => i.message) }
+  }
 
+  const { url } = result.data
   const code = nanoid(6)
-  // TODO: Handle unique constraint error
-  await prisma.link.create({
-    data: {
-      code,
-      url,
-    },
-  })
+  await prisma.link.create({ data: { code, url } })
 
-  return code
+  return { code }
 }
 
 export default function Shorten() {
-  const code = useActionData()
+  const actionData = useActionData<ActionData>()
+  const transition = useTransition()
+  const isSubmitting = transition.submission
+
+  const formRef = useRef<HTMLFormElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (!isSubmitting) {
+      formRef.current?.reset()
+      inputRef.current?.focus()
+    }
+  }, [isSubmitting])
 
   return (
     <div>
       <h1>Shorten a URL</h1>
-      <Form method="post">
+      <Form ref={formRef} method="post" replace>
         <input
+          ref={inputRef}
           type="url"
           name="url"
           aria-label="URL to shorten"
@@ -39,14 +54,16 @@ export default function Shorten() {
         />
         <button type="submit">Shorten</button>
       </Form>
-      {code && (
+      {actionData?.errors &&
+        actionData?.errors.map(error => <p>Error: {error}</p>)}
+      {actionData?.code && (
         <p>
           Link created:{' '}
           <a
-            href={`/${code}`}
+            href={`/${actionData?.code}`}
             target="_blank"
             rel="noreferrer"
-          >{`${location.origin}/${code}`}</a>
+          >{`${location.origin}/${actionData?.code}`}</a>
         </p>
       )}
     </div>
