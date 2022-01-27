@@ -10,6 +10,6 @@ datasource db {
 model Link {
   id     String @id @default(uuid())
   url    String
-  code   String @db.VarChar(6)
-  visits Int
+  code   String @unique @db.VarChar(6)
+  visits Int    @default(0)
 }
