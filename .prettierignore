@@ -3,3 +3,4 @@
 build/
 server/build
 public/build
+*lock.yaml
