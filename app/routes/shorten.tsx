@@ -55,15 +55,15 @@ export default function Shorten() {
         <button type="submit">Shorten</button>
       </Form>
       {actionData?.errors &&
-        actionData?.errors.map(error => <p>Error: {error}</p>)}
+        actionData.errors.map(error => <p>Error: {error}</p>)}
       {actionData?.code && (
         <p>
           Link created:{' '}
           <a
-            href={`/${actionData?.code}`}
+            href={`/${actionData.code}`}
             target="_blank"
             rel="noreferrer"
-          >{`${location.origin}/${actionData?.code}`}</a>
+          >{`${location.origin}/${actionData.code}`}</a>
         </p>
       )}
     </div>
