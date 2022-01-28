@@ -1,25 +1,39 @@
-import { withEmotionCache } from '@emotion/react'
+import { ThemeProvider, withEmotionCache } from '@emotion/react'
 import {
   Alert,
   AlertTitle,
+  CssBaseline,
   Link as MUILink,
+  Theme,
   unstable_useEnhancedEffect as useEnhancedEffect,
 } from '@mui/material'
 import { useContext } from 'react'
 import {
+  HeadersFunction,
   Link as RemixLink,
   Links,
   LiveReload,
+  LoaderFunction,
   Meta,
   MetaFunction,
   Outlet,
   Scripts,
   ScrollRestoration,
   useCatch,
+  useLoaderData,
 } from 'remix'
 import Layout from './components/Layout'
-import ClientStyleContext from './material/ClientStyleContext'
-import theme from './material/theme'
+import ClientStyleContext from './material/ClientStyleContext.client'
+import { getTheme } from './util/theme'
+import { getUserTheme } from './util/theme.server'
+
+export const loader: LoaderFunction = async ({ request }) => {
+  return { userTheme: await getUserTheme(request) }
+}
+
+export const headers: HeadersFunction = () => ({
+  'Accept-CH': 'Sec-CH-Prefers-Color-Scheme',
+})
 
 export const meta: MetaFunction = () => {
   return {
@@ -29,11 +43,12 @@ export const meta: MetaFunction = () => {
 }
 
 interface DocumentProps {
+  theme: Theme
   children: React.ReactNode
 }
 
 const Document = withEmotionCache(
-  ({ children }: DocumentProps, emotionCache) => {
+  ({ theme, children }: DocumentProps, emotionCache) => {
     const clientStyleData = useContext(ClientStyleContext)
 
     // Only executed on client
@@ -74,7 +89,11 @@ const Document = withEmotionCache(
           />
         </head>
         <body>
-          {children}
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {children}
+          </ThemeProvider>
+
           <ScrollRestoration />
           <Scripts />
           {process.env.NODE_ENV === 'development' && <LiveReload />}
@@ -85,8 +104,10 @@ const Document = withEmotionCache(
 )
 
 export default function App() {
+  const { userTheme } = useLoaderData()
+  const theme = getTheme(userTheme)
   return (
-    <Document>
+    <Document theme={theme}>
       <Layout>
         <Outlet />
       </Layout>
@@ -95,8 +116,10 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
+  const { userTheme } = useLoaderData()
+  const theme = getTheme(userTheme)
   return (
-    <Document>
+    <Document theme={theme}>
       <Layout>
         <Alert severity="error">
           <AlertTitle>Error</AlertTitle>
@@ -109,9 +132,11 @@ export function ErrorBoundary({ error }: { error: Error }) {
 }
 
 export function CatchBoundary() {
+  const { userTheme } = useLoaderData()
+  const theme = getTheme(userTheme)
   const caught = useCatch()
   return (
-    <Document>
+    <Document theme={theme}>
       <Layout>
         <Alert severity="error">
           <AlertTitle>
