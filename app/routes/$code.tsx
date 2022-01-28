@@ -1,23 +1,24 @@
 import { LoaderFunction, redirect } from 'remix'
-import prisma from '~/db.server'
+import { getLink, incrementLinkVisits } from '~/services/link.service'
+
+const NotFoundResponse = new Response('Not Found', {
+  status: 404,
+})
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { code } = params
+  if (!code) throw NotFoundResponse
 
-  const link = await prisma.link.findUnique({
-    select: {
-      url: true,
-    },
-    where: { code },
-  })
-  if (!link) {
-    throw new Error('Link not found')
-  }
+  const link = await getLink(code)
+  if (!link) throw NotFoundResponse
 
-  await prisma.link.update({
-    where: { code },
-    data: { visits: { increment: 1 } },
-  })
+  incrementLinkVisits(code)
 
   return redirect(link.url)
+}
+
+// A default export is required for errors to be caught by the global catch
+// boundary
+export default function () {
+  return null
 }

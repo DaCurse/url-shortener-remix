@@ -1,7 +1,13 @@
 import { withEmotionCache } from '@emotion/react'
-import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/material'
+import {
+  Alert,
+  AlertTitle,
+  Link as MUILink,
+  unstable_useEnhancedEffect as useEnhancedEffect,
+} from '@mui/material'
 import { useContext } from 'react'
 import {
+  Link as RemixLink,
   Links,
   LiveReload,
   Meta,
@@ -9,6 +15,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useCatch,
 } from 'remix'
 import Layout from './components/Layout'
 import ClientStyleContext from './material/ClientStyleContext'
@@ -82,6 +89,38 @@ export default function App() {
     <Document>
       <Layout>
         <Outlet />
+      </Layout>
+    </Document>
+  )
+}
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  return (
+    <Document>
+      <Layout>
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          An unknown error occured!
+          {process.env.NODE_ENV === 'development' && <pre>{error.stack}</pre>}
+        </Alert>
+      </Layout>
+    </Document>
+  )
+}
+
+export function CatchBoundary() {
+  const caught = useCatch()
+  return (
+    <Document>
+      <Layout>
+        <Alert severity="error">
+          <AlertTitle>
+            {caught.status} - {caught.statusText}
+          </AlertTitle>
+          <MUILink component={RemixLink} to="/">
+            Go back
+          </MUILink>
+        </Alert>
       </Layout>
     </Document>
   )

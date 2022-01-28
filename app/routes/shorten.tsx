@@ -10,12 +10,11 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material'
-import { nanoid } from 'nanoid'
 import { useEffect, useRef } from 'react'
 import { ActionFunction, Form, useActionData, useTransition } from 'remix'
 import { z } from 'zod'
 import AlertSnackbar from '~/components/AlertSnackbar'
-import prisma from '~/db.server'
+import { createLink } from '~/services/link.service'
 
 const FormDataSchema = z.object({
   url: z.string().url(),
@@ -33,10 +32,9 @@ export const action: ActionFunction = async ({
   }
 
   const { url } = result.data
-  const code = nanoid(6)
-  await prisma.link.create({ data: { code, url } })
-
+  const code = createLink(url)
   const baseUrl = new URL(request.url).origin
+
   return { shortenedUrl: `${baseUrl}/${code}` }
 }
 
