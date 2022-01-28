@@ -32,7 +32,7 @@ export const action: ActionFunction = async ({
   }
 
   const { url } = result.data
-  const code = createLink(url)
+  const code = await createLink(url)
   const baseUrl = new URL(request.url).origin
 
   return { shortenedUrl: `${baseUrl}/${code}` }
