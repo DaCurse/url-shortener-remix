@@ -37,7 +37,6 @@ export const action: ActionFunction = async ({
   await prisma.link.create({ data: { code, url } })
 
   const baseUrl = new URL(request.url).origin
-
   return { shortenedUrl: `${baseUrl}/${code}` }
 }
 
