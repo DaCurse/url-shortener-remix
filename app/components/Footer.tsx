@@ -3,7 +3,7 @@ import { Box, IconButton, Tooltip } from '@mui/material'
 
 export default function Footer() {
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box component="footer" sx={{ mt: 2 }}>
       <Tooltip title="View source">
         <IconButton
           aria-label="GitHub Repository"
