@@ -10,7 +10,7 @@ export default function Header() {
       <Avatar sx={{ m: 1, bgcolor: 'info.dark' }}>
         <LinkIcon />
       </Avatar>
-      <Typography component="h1" variant="h5">
+      <Typography component="h1" variant="h4">
         URL Shortener
       </Typography>
     </Box>

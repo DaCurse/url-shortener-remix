@@ -1,12 +1,14 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import InsertLinkIcon from '@mui/icons-material/InsertLink'
 import SendIcon from '@mui/icons-material/Send'
-import type { IconButtonProps } from '@mui/material'
 import {
   Alert,
+  Box,
+  Grid,
   IconButton,
+  IconButtonProps,
   InputAdornment,
-  Link,
+  Link as MUILink,
   TextField,
   Tooltip,
 } from '@mui/material'
@@ -15,6 +17,7 @@ import type { ActionFunction } from 'remix'
 import { Form, useActionData, useTransition } from 'remix'
 import { z } from 'zod'
 import AlertSnackbar from '~/components/AlertSnackbar'
+import Link from '~/components/Link'
 import { createLink } from '~/services/link.service'
 
 const FormDataSchema = z.object({
@@ -61,9 +64,9 @@ function SuccessAlert({ url }: { url: string }) {
   return (
     <Alert sx={{ mt: 1 }} severity="success" action={<CopyButton data={url} />}>
       Link created:{' '}
-      <Link href={url} target="_blank" rel="noreferrer">
+      <MUILink href={url} target="_blank" rel="noreferrer">
         {url}
-      </Link>
+      </MUILink>
     </Alert>
   )
 }
@@ -90,32 +93,62 @@ export default function Shorten() {
   }, [state])
 
   return (
-    <>
-      <Form ref={formRef} method="post" replace>
-        <TextField
-          inputRef={inputRef}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <InsertLinkIcon />
-              </InputAdornment>
-            ),
-            endAdornment: <SubmitButton disabled={state === 'submitting'} />,
-          }}
-          error={state === 'error'}
-          type="url"
-          name="url"
-          label="URL to shorten"
-          aria-label="URL to shorten"
-        />
-      </Form>
-      {actionData?.shortenedUrl && (
-        <SuccessAlert url={actionData.shortenedUrl} />
-      )}
+    <Box
+      sx={{
+        mt: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      <Grid
+        container
+        rowSpacing={1}
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Grid item md>
+          <Form ref={formRef} method="post" replace>
+            <TextField
+              inputRef={inputRef}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <InsertLinkIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <SubmitButton disabled={state === 'submitting'} />
+                ),
+              }}
+              fullWidth
+              margin="normal"
+              error={state === 'error'}
+              type="url"
+              name="url"
+              label="URL to shorten"
+              aria-label="URL to shorten"
+            />
+          </Form>
+        </Grid>
+        {actionData?.shortenedUrl && (
+          <Grid item>
+            <SuccessAlert url={actionData.shortenedUrl} />
+          </Grid>
+        )}
+        <Grid item>
+          <Alert severity="info">
+            <Link to="/user/login">Login</Link> or{' '}
+            <Link to="/user/register">Register</Link> to create vanity links and
+            view statistics
+          </Alert>
+        </Grid>
+      </Grid>
       {state === 'error' &&
         actionData?.errors?.map(error => (
           <AlertSnackbar message={error} severity="error" />
         ))}
-    </>
+    </Box>
   )
 }

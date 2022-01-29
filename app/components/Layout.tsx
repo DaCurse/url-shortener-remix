@@ -14,16 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         }}
       >
         <Header />
-        <Box
-          sx={{
-            mt: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          {children}
-        </Box>
+        {children}
         <Footer />
       </Box>
     </Container>

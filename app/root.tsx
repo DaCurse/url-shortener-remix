@@ -3,13 +3,11 @@ import {
   Alert,
   AlertTitle,
   CssBaseline,
-  Link as MUILink,
   unstable_useEnhancedEffect as useEnhancedEffect,
 } from '@mui/material'
 import { useContext } from 'react'
 import type { HeadersFunction, LoaderFunction, MetaFunction } from 'remix'
 import {
-  Link as RemixLink,
   Links,
   LiveReload,
   Meta,
@@ -20,6 +18,7 @@ import {
   useLoaderData,
 } from 'remix'
 import Layout from './components/Layout'
+import Link from './components/Link'
 import ClientStyleContext from './material/ClientStyleContext.client'
 import { getTheme } from './util/theme'
 import { getUserTheme } from './util/theme.server'
@@ -128,9 +127,7 @@ export function CatchBoundary() {
         <AlertTitle>
           {caught.status} - {caught.statusText}
         </AlertTitle>
-        <MUILink component={RemixLink} to="/">
-          Go back
-        </MUILink>
+        <Link to="/">Go back</Link>
       </Alert>
     </Document>
   )
