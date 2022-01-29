@@ -7,8 +7,15 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import type { MetaFunction } from 'remix'
 import { Form } from 'remix'
 import Link from '~/components/Link'
+
+export const meta: MetaFunction = () => {
+  return {
+    title: 'URL Shortener - Login',
+  }
+}
 
 export default function Login() {
   return (

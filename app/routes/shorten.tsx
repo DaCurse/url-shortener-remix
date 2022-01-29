@@ -12,7 +12,13 @@ import {
   Tooltip,
 } from '@mui/material'
 import { useEffect, useRef } from 'react'
-import { ActionFunction, useActionData, useFetcher, useTransition } from 'remix'
+import {
+  ActionFunction,
+  MetaFunction,
+  useActionData,
+  useFetcher,
+  useTransition,
+} from 'remix'
 import { z } from 'zod'
 import Link from '~/components/Link'
 import { createLink } from '~/services/link.service'
@@ -37,6 +43,12 @@ export const action: ActionFunction = async ({
   const baseUrl = new URL(request.url).origin
 
   return { shortenedUrl: `${baseUrl}/${code}` }
+}
+
+export const meta: MetaFunction = () => {
+  return {
+    title: 'URL Shortener - Shorten your URL',
+  }
 }
 
 function SubmitButton(props: IconButtonProps) {
