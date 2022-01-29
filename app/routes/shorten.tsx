@@ -1,17 +1,18 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import InsertLinkIcon from '@mui/icons-material/InsertLink'
 import SendIcon from '@mui/icons-material/Send'
+import type { IconButtonProps } from '@mui/material'
 import {
   Alert,
   IconButton,
-  IconButtonProps,
   InputAdornment,
   Link,
   TextField,
   Tooltip,
 } from '@mui/material'
 import { useEffect, useRef } from 'react'
-import { ActionFunction, Form, useActionData, useTransition } from 'remix'
+import type { ActionFunction } from 'remix'
+import { Form, useActionData, useTransition } from 'remix'
 import { z } from 'zod'
 import AlertSnackbar from '~/components/AlertSnackbar'
 import { createLink } from '~/services/link.service'

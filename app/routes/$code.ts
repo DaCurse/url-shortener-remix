@@ -1,4 +1,5 @@
-import { LoaderFunction, redirect } from 'remix'
+import type { LoaderFunction } from 'remix'
+import { redirect } from 'remix'
 import { getLink, incrementLinkVisits } from '~/services/link.service'
 
 const NotFoundResponse = new Response('Not Found', {

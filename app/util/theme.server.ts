@@ -1,7 +1,7 @@
 import { createCookie } from 'remix'
 import { DEFAULT_THEME } from './theme'
 
-const themeCookie = createCookie('theme')
+export const themeCookie = createCookie('theme')
 
 async function getThemeCookie(request: Request): Promise<any> {
   return await themeCookie.parse(request.headers.get('cookie'))
