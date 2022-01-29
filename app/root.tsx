@@ -89,7 +89,6 @@ const Document = withEmotionCache(
             <CssBaseline />
             <Layout>{children}</Layout>
           </ThemeProvider>
-
           <ScrollRestoration />
           <Scripts />
           {process.env.NODE_ENV === 'development' && <LiveReload />}

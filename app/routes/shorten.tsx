@@ -3,7 +3,6 @@ import InsertLinkIcon from '@mui/icons-material/InsertLink'
 import SendIcon from '@mui/icons-material/Send'
 import {
   Alert,
-  Box,
   Grid,
   IconButton,
   IconButtonProps,
@@ -93,14 +92,7 @@ export default function Shorten() {
   }, [state])
 
   return (
-    <Box
-      sx={{
-        mt: 2,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
+    <>
       <Grid
         container
         rowSpacing={1}
@@ -149,6 +141,6 @@ export default function Shorten() {
         actionData?.errors?.map(error => (
           <AlertSnackbar message={error} severity="error" />
         ))}
-    </Box>
+    </>
   )
 }
