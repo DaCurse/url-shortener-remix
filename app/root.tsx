@@ -1,18 +1,32 @@
-import { withEmotionCache } from '@emotion/react'
-import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/material'
-import { useContext } from 'react'
+import { ThemeProvider, withEmotionCache } from '@emotion/react'
 import {
+  Alert,
+  AlertTitle,
+  CssBaseline,
+  Link as MUILink,
+  unstable_useEnhancedEffect as useEnhancedEffect,
+} from '@mui/material'
+import { useContext } from 'react'
+import type { HeadersFunction, LoaderFunction, MetaFunction } from 'remix'
+import {
+  Link as RemixLink,
   Links,
   LiveReload,
   Meta,
-  MetaFunction,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useCatch,
+  useLoaderData,
 } from 'remix'
 import Layout from './components/Layout'
-import ClientStyleContext from './material/ClientStyleContext'
-import theme from './material/theme'
+import ClientStyleContext from './material/ClientStyleContext.client'
+import { getTheme } from './util/theme'
+import { getUserTheme } from './util/theme.server'
+
+export const headers: HeadersFunction = () => ({
+  'Accept-CH': 'Sec-CH-Prefers-Color-Scheme',
+})
 
 export const meta: MetaFunction = () => {
   return {
@@ -21,12 +35,17 @@ export const meta: MetaFunction = () => {
   }
 }
 
+export const loader: LoaderFunction = async ({ request }) => {
+  return { userTheme: await getUserTheme(request) }
+}
 interface DocumentProps {
   children: React.ReactNode
 }
 
 const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
+    const { userTheme } = useLoaderData()
+    const theme = getTheme(userTheme)
     const clientStyleData = useContext(ClientStyleContext)
 
     // Only executed on client
@@ -67,7 +86,11 @@ const Document = withEmotionCache(
           />
         </head>
         <body>
-          {children}
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Layout>{children}</Layout>
+          </ThemeProvider>
+
           <ScrollRestoration />
           <Scripts />
           {process.env.NODE_ENV === 'development' && <LiveReload />}
@@ -80,9 +103,35 @@ const Document = withEmotionCache(
 export default function App() {
   return (
     <Document>
-      <Layout>
-        <Outlet />
-      </Layout>
+      <Outlet />
+    </Document>
+  )
+}
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  return (
+    <Document>
+      <Alert severity="error">
+        <AlertTitle>Error</AlertTitle>
+        An unknown error occured!
+        {process.env.NODE_ENV === 'development' && <pre>{error.stack}</pre>}
+      </Alert>
+    </Document>
+  )
+}
+
+export function CatchBoundary() {
+  const caught = useCatch()
+  return (
+    <Document>
+      <Alert severity="error">
+        <AlertTitle>
+          {caught.status} - {caught.statusText}
+        </AlertTitle>
+        <MUILink component={RemixLink} to="/">
+          Go back
+        </MUILink>
+      </Alert>
     </Document>
   )
 }

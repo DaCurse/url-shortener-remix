@@ -1,5 +1,7 @@
-import { Alert, AlertColor, Snackbar, SnackbarCloseReason } from '@mui/material'
-import { SyntheticEvent, useState } from 'react'
+import type { AlertColor, SnackbarCloseReason } from '@mui/material'
+import { Alert, Snackbar } from '@mui/material'
+import type { SyntheticEvent } from 'react'
+import { useState } from 'react'
 
 const AUTO_HIDE_DURATION = 5000
 

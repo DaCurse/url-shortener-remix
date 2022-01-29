@@ -1,5 +1,6 @@
 import GitHubIcon from '@mui/icons-material/GitHub'
 import { Box, IconButton, Tooltip } from '@mui/material'
+import ThemeSwitcher from './ThemeSwitcher'
 
 export default function Footer() {
   return (
@@ -14,6 +15,7 @@ export default function Footer() {
           <GitHubIcon />
         </IconButton>
       </Tooltip>
+      <ThemeSwitcher />
     </Box>
   )
 }

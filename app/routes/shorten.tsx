@@ -1,21 +1,21 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import InsertLinkIcon from '@mui/icons-material/InsertLink'
 import SendIcon from '@mui/icons-material/Send'
+import type { IconButtonProps } from '@mui/material'
 import {
   Alert,
   IconButton,
-  IconButtonProps,
   InputAdornment,
   Link,
   TextField,
   Tooltip,
 } from '@mui/material'
-import { nanoid } from 'nanoid'
 import { useEffect, useRef } from 'react'
-import { ActionFunction, Form, useActionData, useTransition } from 'remix'
+import type { ActionFunction } from 'remix'
+import { Form, useActionData, useTransition } from 'remix'
 import { z } from 'zod'
 import AlertSnackbar from '~/components/AlertSnackbar'
-import prisma from '~/db.server'
+import { createLink } from '~/services/link.service'
 
 const FormDataSchema = z.object({
   url: z.string().url(),
@@ -33,9 +33,7 @@ export const action: ActionFunction = async ({
   }
 
   const { url } = result.data
-  const code = nanoid(6)
-  await prisma.link.create({ data: { code, url } })
-
+  const code = await createLink(url)
   const baseUrl = new URL(request.url).origin
 
   return { shortenedUrl: `${baseUrl}/${code}` }
