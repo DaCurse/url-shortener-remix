@@ -5,8 +5,16 @@ import {
   CssBaseline,
   unstable_useEnhancedEffect as useEnhancedEffect,
 } from '@mui/material'
-import { useContext } from 'react'
-import type { HeadersFunction, LoaderFunction, MetaFunction } from 'remix'
+import nProgress from 'nprogress'
+import nProgressStyles from 'nprogress/nprogress.css'
+import { useContext, useEffect } from 'react'
+import type {
+  HeadersFunction,
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+  ShouldReloadFunction,
+} from 'remix'
 import {
   Links,
   LiveReload,
@@ -16,6 +24,7 @@ import {
   ScrollRestoration,
   useCatch,
   useLoaderData,
+  useTransition,
 } from 'remix'
 import Layout from './components/Layout'
 import Link from './components/Link'
@@ -33,10 +42,18 @@ export const meta: MetaFunction = () => {
     description: 'A URL Shortener made with Remix',
   }
 }
+export const links: LinksFunction = () => {
+  return [{ rel: 'stylesheet', href: nProgressStyles }]
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
   return { userTheme: await getUserTheme(request) }
 }
+
+export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+  return !submission
+}
+
 interface DocumentProps {
   children: React.ReactNode
 }
@@ -45,6 +62,16 @@ const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
     const { userTheme } = useLoaderData()
     const theme = getTheme(userTheme)
+
+    const transition = useTransition()
+    useEffect(() => {
+      // when the state is idle then we can to complete the progress bar
+      if (transition.state === 'idle') nProgress.done()
+      // and when it's something else it means it's either submitting a form or
+      // waiting for the loaders of the next location so we start it
+      else nProgress.start()
+    }, [transition.state])
+
     const clientStyleData = useContext(ClientStyleContext)
 
     // Only executed on client

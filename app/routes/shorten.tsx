@@ -12,10 +12,8 @@ import {
   Tooltip,
 } from '@mui/material'
 import { useEffect, useRef } from 'react'
-import type { ActionFunction } from 'remix'
-import { Form, useActionData, useTransition } from 'remix'
+import { ActionFunction, useActionData, useFetcher, useTransition } from 'remix'
 import { z } from 'zod'
-import AlertSnackbar from '~/components/AlertSnackbar'
 import Link from '~/components/Link'
 import { createLink } from '~/services/link.service'
 
@@ -23,7 +21,7 @@ const FormDataSchema = z.object({
   url: z.string().url(),
 })
 
-type ActionData = { shortenedUrl?: string; errors?: string[] }
+type ActionData = { shortenedUrl?: string; issues?: string[] }
 
 export const action: ActionFunction = async ({
   request,
@@ -31,7 +29,7 @@ export const action: ActionFunction = async ({
   const formData = await request.formData()
   const result = FormDataSchema.safeParse(Object.fromEntries(formData))
   if (!result.success) {
-    return { errors: result.error.issues.map(i => i.message) }
+    return { issues: result.error.issues.map(i => i.message) }
   }
 
   const { url } = result.data
@@ -72,10 +70,11 @@ function SuccessAlert({ url }: { url: string }) {
 
 export default function Shorten() {
   const actionData = useActionData<ActionData>()
+  const fetcher = useFetcher()
   const transition = useTransition()
   const state: 'idle' | 'submitting' | 'error' = transition.submission
     ? 'submitting'
-    : actionData?.errors
+    : actionData?.issues
     ? 'error'
     : 'idle'
 
@@ -92,55 +91,54 @@ export default function Shorten() {
   }, [state])
 
   return (
-    <>
-      <Grid
-        container
-        rowSpacing={1}
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Grid item md>
-          <Form ref={formRef} method="post" replace>
-            <TextField
-              inputRef={inputRef}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <InsertLinkIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <SubmitButton disabled={state === 'submitting'} />
-                ),
-              }}
-              fullWidth
-              margin="normal"
-              error={state === 'error'}
-              type="url"
-              name="url"
-              label="URL to shorten"
-              aria-label="URL to shorten"
-            />
-          </Form>
-        </Grid>
-        {actionData?.shortenedUrl && (
-          <Grid item>
-            <SuccessAlert url={actionData.shortenedUrl} />
-          </Grid>
-        )}
-        <Grid item>
-          <Alert severity="info">
-            <Link to="/user/login">Login</Link> or{' '}
-            <Link to="/user/register">Register</Link> to create vanity links and
-            view statistics
-          </Alert>
-        </Grid>
+    <Grid
+      container
+      rowSpacing={1}
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Grid item sx={{ width: '100%' }}>
+        <fetcher.Form ref={formRef} method="post" replace>
+          <TextField
+            inputRef={inputRef}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <InsertLinkIcon />
+                </InputAdornment>
+              ),
+              endAdornment: <SubmitButton disabled={state === 'submitting'} />,
+            }}
+            fullWidth
+            margin="normal"
+            error={state === 'error'}
+            type="url"
+            name="url"
+            label="URL to shorten"
+            aria-label="URL to shorten"
+          />
+        </fetcher.Form>
       </Grid>
+      {actionData?.shortenedUrl && (
+        <Grid item sx={{ width: '100%' }}>
+          <SuccessAlert url={actionData.shortenedUrl} />
+        </Grid>
+      )}
       {state === 'error' &&
-        actionData?.errors?.map(error => (
-          <AlertSnackbar message={error} severity="error" />
+        actionData?.issues?.map(issue => (
+          <Grid item sx={{ width: '100%' }} key={issue}>
+            <Alert severity="error">{issue}</Alert>
+          </Grid>
         ))}
-    </>
+
+      <Grid item sx={{ width: '100%' }}>
+        <Alert severity="info">
+          <Link to="/user/login">Login</Link> or{' '}
+          <Link to="/user/register">Register</Link> to create vanity links and
+          view statistics
+        </Alert>
+      </Grid>
+    </Grid>
   )
 }
