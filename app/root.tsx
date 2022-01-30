@@ -3,6 +3,7 @@ import {
   Alert,
   AlertTitle,
   CssBaseline,
+  Typography,
   unstable_useEnhancedEffect as useEnhancedEffect,
 } from '@mui/material'
 import nProgress from 'nprogress'
@@ -46,7 +47,11 @@ export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: nProgressStyles }]
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
+export type RootLoaderData = { userTheme: string }
+
+export const loader: LoaderFunction = async ({
+  request,
+}): Promise<RootLoaderData> => {
   return { userTheme: await getUserTheme(request) }
 }
 
@@ -60,8 +65,8 @@ interface DocumentProps {
 
 const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
-    const { userTheme } = useLoaderData()
-    const theme = getTheme(userTheme)
+    const loaderData = useLoaderData<RootLoaderData>()
+    const theme = getTheme(loaderData?.userTheme)
 
     const transition = useTransition()
     useEffect(() => {
@@ -134,10 +139,17 @@ export default function App() {
 export function ErrorBoundary({ error }: { error: Error }) {
   return (
     <Document>
-      <Alert severity="error">
+      <Alert severity="error" sx={{ mt: 2 }}>
         <AlertTitle>Error</AlertTitle>
-        An unknown error occured!
-        {process.env.NODE_ENV === 'development' && <pre>{error.stack}</pre>}
+        <Typography>An unknown error occured!</Typography>
+        {process.env.NODE_ENV === 'development' && (
+          <pre style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>
+            {error.stack}
+          </pre>
+        )}
+        <Link to="/" variant="body1">
+          Go back
+        </Link>
       </Alert>
     </Document>
   )
@@ -147,11 +159,13 @@ export function CatchBoundary() {
   const caught = useCatch()
   return (
     <Document>
-      <Alert severity="error">
+      <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
         <AlertTitle>
           {caught.status} - {caught.statusText}
         </AlertTitle>
-        <Link to="/">Go back</Link>
+        <Link to="/" variant="body1">
+          Go back
+        </Link>
       </Alert>
     </Document>
   )
