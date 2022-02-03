@@ -56,6 +56,9 @@ export const loader: LoaderFunction = async ({
 }
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+  // Disable reload of page data when switching between themes, `submission` is
+  // `undefined` when using a fetcher.Form - this is a bug, so this is a hacky
+  // fix for now
   return !submission
 }
 
@@ -67,32 +70,28 @@ const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
     const loaderData = useLoaderData<RootLoaderData>()
     const theme = getTheme(loaderData?.userTheme)
-
     const transition = useTransition()
+    const clientStyleData = useContext(ClientStyleContext)
+
     useEffect(() => {
-      // when the state is idle then we can to complete the progress bar
+      // When the state is idle then we can to complete the progress bar
       if (transition.state === 'idle') nProgress.done()
-      // and when it's something else it means it's either submitting a form or
+      // And when it's something else it means it's either submitting a form or
       // waiting for the loaders of the next location so we start it
       else nProgress.start()
     }, [transition.state])
 
-    const clientStyleData = useContext(ClientStyleContext)
-
-    // Only executed on client
     useEnhancedEffect(() => {
-      // re-link sheet container
+      // Re-link sheet container
       emotionCache.sheet.container = document.head
-      // re-inject tags
+      // Re-inject tags
       const tags = emotionCache.sheet.tags
       emotionCache.sheet.flush()
       tags.forEach(tag => {
-        // eslint-disable-next-line no-underscore-dangle
         ;(emotionCache.sheet as any)._insertTag(tag)
       })
-      // reset cache to reapply global styles
+      // Reset cache to reapply global styles
       clientStyleData.reset()
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (

@@ -31,7 +31,6 @@ export default async function handleRequest(
   // Render the component to a string.
   const html = renderToString(<MuiRemixServer />)
   // Grab the CSS from emotion
-
   const { styles } = extractCriticalToChunks(html)
   const stylesHTML = styles.reduce((html, { key, ids, css }) => {
     const emotionKey = `${key} ${ids.join(' ')}`
