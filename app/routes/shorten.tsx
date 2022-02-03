@@ -1,24 +1,19 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import InsertLinkIcon from '@mui/icons-material/InsertLink'
 import SendIcon from '@mui/icons-material/Send'
+import type { IconButtonProps } from '@mui/material'
 import {
   Alert,
   Grid,
   IconButton,
-  IconButtonProps,
   InputAdornment,
   Link as MUILink,
   TextField,
   Tooltip,
 } from '@mui/material'
 import { useEffect, useRef } from 'react'
-import {
-  ActionFunction,
-  MetaFunction,
-  useActionData,
-  useFetcher,
-  useTransition,
-} from 'remix'
+import type { ActionFunction, MetaFunction } from 'remix'
+import { Form, useActionData, useTransition } from 'remix'
 import { z } from 'zod'
 import Link from '~/components/Link'
 import { createLink } from '~/services/link.service'
@@ -82,7 +77,6 @@ function SuccessAlert({ url }: { url: string }) {
 
 export default function Shorten() {
   const actionData = useActionData<ActionData>()
-  const fetcher = useFetcher()
   const transition = useTransition()
   const state: 'idle' | 'submitting' | 'error' = transition.submission
     ? 'submitting'
@@ -111,7 +105,7 @@ export default function Shorten() {
       alignItems="center"
     >
       <Grid item sx={{ width: '100%' }}>
-        <fetcher.Form ref={formRef} method="post" replace>
+        <Form ref={formRef} method="post" replace>
           <TextField
             inputRef={inputRef}
             InputProps={{
@@ -130,7 +124,7 @@ export default function Shorten() {
             label="URL to shorten"
             aria-label="URL to shorten"
           />
-        </fetcher.Form>
+        </Form>
       </Grid>
       {actionData?.shortenedUrl && (
         <Grid item sx={{ width: '100%' }}>
