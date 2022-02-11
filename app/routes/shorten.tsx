@@ -22,7 +22,7 @@ const FormDataSchema = z.object({
   url: z.string().url(),
 })
 
-type ActionData = { shortenedUrl?: string; issues?: string[] }
+type ActionData = { shortenedUrl?: string; error?: string }
 
 export const action: ActionFunction = async ({
   request,
@@ -30,7 +30,7 @@ export const action: ActionFunction = async ({
   const formData = await request.formData()
   const result = FormDataSchema.safeParse(Object.fromEntries(formData))
   if (!result.success) {
-    return { issues: result.error.issues.map(i => i.message) }
+    return { error: result.error.issues[0].message }
   }
 
   const { url } = result.data
@@ -80,7 +80,7 @@ export default function Shorten() {
   const transition = useTransition()
   const state: 'idle' | 'submitting' | 'error' = transition.submission
     ? 'submitting'
-    : actionData?.issues
+    : actionData?.error
     ? 'error'
     : 'idle'
 
@@ -119,6 +119,7 @@ export default function Shorten() {
             fullWidth
             margin="normal"
             error={state === 'error'}
+            helperText={actionData?.error}
             type="url"
             name="url"
             label="URL to shorten"
@@ -131,13 +132,6 @@ export default function Shorten() {
           <SuccessAlert url={actionData.shortenedUrl} />
         </Grid>
       )}
-      {state === 'error' &&
-        actionData?.issues?.map(issue => (
-          <Grid item sx={{ width: '100%' }} key={issue}>
-            <Alert severity="error">{issue}</Alert>
-          </Grid>
-        ))}
-
       <Grid item sx={{ width: '100%' }}>
         <Alert severity="info">
           <Link to="/user/login">Login</Link> or{' '}
