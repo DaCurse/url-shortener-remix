@@ -16,7 +16,7 @@ export default function ThemeToggle() {
     >
       <input
         type="hidden"
-        name="theme-name"
+        name="theme"
         value={loaderData?.themeName === 'dark' ? 'light' : 'dark'}
       />
       <Tooltip title="Toggle theme">

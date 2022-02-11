@@ -1,6 +1,6 @@
 import type { ActionFunction, LoaderFunction } from 'remix'
 import { redirect } from 'remix'
-import { themes } from '~/util/theme'
+import { isValidTheme } from '~/util/theme'
 import { themeCookie } from '~/util/theme.server'
 
 export const loader: LoaderFunction = () => {
@@ -9,14 +9,14 @@ export const loader: LoaderFunction = () => {
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData()
-  const themeName = String(formData.get('theme-name'))
-  if (!themes.hasOwnProperty(themeName)) {
+  const themeName = String(formData.get('theme'))
+  if (!isValidTheme(themeName)) {
     throw new Response('Invalid theme name', { status: 400 })
   }
 
   return redirect(request.headers.get('Referer') || '/', {
     headers: {
-      'Set-Cookie': await themeCookie.serialize(formData.get('theme-name')),
+      'Set-Cookie': await themeCookie.serialize(themeName),
     },
   })
 }
