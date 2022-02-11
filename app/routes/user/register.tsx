@@ -1,28 +1,20 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Box, Button, TextField, Typography } from '@mui/material'
 import type { MetaFunction } from 'remix'
 import { Form } from 'remix'
 import Link from '~/components/Link'
 
 export const meta: MetaFunction = () => {
   return {
-    title: 'URL Shortener - Login',
+    title: 'URL Shortener - Register',
   }
 }
 
-export default function Login() {
+export default function Register() {
   return (
     <Box component="section" justifyContent="center">
       <header>
         <Typography component="h2" variant="h5">
-          Sign in
+          Sign up
         </Typography>
       </header>
       <Typography>
@@ -47,30 +39,26 @@ export default function Login() {
           label="Password"
           type="password"
         />
-        <FormControlLabel
-          control={<Checkbox name="remember" color="primary" />}
-          label="Remember me"
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          name="password-confirm"
+          label="Confirm Password"
+          type="password"
         />
+
         <Button
           type="submit"
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Sign In
+          Sign Up
         </Button>
-        <Grid container>
-          <Grid item xs>
-            <Link to="/user/forgotPassword" variant="body2">
-              Forgot password?
-            </Link>
-          </Grid>
-          <Grid item>
-            <Link to="/user/register" variant="body2">
-              Don't have an account? Sign Up
-            </Link>
-          </Grid>
-        </Grid>
+        <Link to="/user/login" variant="body2">
+          Already have an account? Sign In
+        </Link>
       </Form>
     </Box>
   )
