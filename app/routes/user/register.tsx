@@ -1,7 +1,9 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Alert, Box, Button, TextField, Typography } from '@mui/material'
+import { useEffect, useRef } from 'react'
 import { ActionFunction, Form, json, MetaFunction, useActionData } from 'remix'
 import { z } from 'zod'
 import Link from '~/components/Link'
+import { createUser, doesUserExist } from '~/services/user.service'
 import { parseZodError } from '~/util/errors.server'
 
 const FormDataSchema = z
@@ -15,15 +17,28 @@ const FormDataSchema = z
     path: ['confirm'],
   })
 
+type ActionData = { success?: true; errors?: Record<string, string> }
+
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData()
   const result = FormDataSchema.safeParse(Object.fromEntries(formData))
-
   if (!result.success) {
-    return json({ errors: parseZodError(result.error) }, { status: 400 })
+    return json<ActionData>(
+      { errors: parseZodError(result.error) },
+      { status: 400 }
+    )
   }
 
-  return null
+  const { email, password } = result.data
+  if (await doesUserExist(email)) {
+    return json<ActionData>(
+      { errors: { email: 'A User with that email already exists' } },
+      { status: 409 }
+    )
+  }
+  await createUser(email, password)
+
+  return json<ActionData>({ success: true })
 }
 
 export const meta: MetaFunction = () => {
@@ -33,7 +48,22 @@ export const meta: MetaFunction = () => {
 }
 
 export default function Register() {
-  const actionData = useActionData()
+  const actionData = useActionData<ActionData>()
+
+  const emailRef = useRef<HTMLInputElement>(null)
+  const passwordRef = useRef<HTMLInputElement>(null)
+  const confirmRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (actionData?.errors?.email) {
+      emailRef.current?.focus()
+    } else if (actionData?.errors?.password) {
+      passwordRef.current?.focus()
+    } else if (actionData?.errors?.confirm) {
+      confirmRef.current?.focus()
+    }
+  }, [actionData?.errors])
+
   return (
     <Box component="section" justifyContent="center">
       <header>
@@ -46,10 +76,11 @@ export default function Register() {
       </Typography>
       <Form method="post">
         <TextField
+          inputRef={emailRef}
           margin="normal"
           required
           fullWidth
-          error={actionData?.errors?.email}
+          error={!!actionData?.errors?.email}
           helperText={actionData?.errors?.email}
           type="email"
           name="email"
@@ -58,26 +89,32 @@ export default function Register() {
           autoFocus
         />
         <TextField
+          inputRef={passwordRef}
           margin="normal"
           required
           fullWidth
-          error={actionData?.errors?.password}
+          error={!!actionData?.errors?.password}
           helperText={actionData?.errors?.password}
           name="password"
           label="Password"
           type="password"
         />
         <TextField
+          inputRef={confirmRef}
           margin="normal"
           required
           fullWidth
-          error={actionData?.errors?.confirm}
+          error={!!actionData?.errors?.confirm}
           helperText={actionData?.errors?.confirm}
           name="confirm"
           label="Confirm Password"
           type="password"
         />
-
+        {actionData?.success && (
+          <Alert sx={{ mt: 1 }} severity="success">
+            Account successfully created, <Link to="/user/login">login</Link>.
+          </Alert>
+        )}
         <Button
           type="submit"
           fullWidth
@@ -86,6 +123,7 @@ export default function Register() {
         >
           Sign Up
         </Button>
+
         <Link to="/user/login" variant="body2">
           Already have an account? Sign In
         </Link>
