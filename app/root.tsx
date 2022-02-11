@@ -56,7 +56,7 @@ export const loader: LoaderFunction = async ({
 }
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
-  // Disable reload of page data when switching between themes, `submission` is
+  // Disable reload of theme when another mutation is in place, `submission` is
   // `undefined` when using a fetcher.Form - this is a bug, so this is a hacky
   // fix for now
   return !submission
