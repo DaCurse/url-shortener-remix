@@ -1,9 +1,10 @@
 import type { LoaderFunction } from 'remix'
 import { redirect } from 'remix'
 import { getLink, incrementLinkVisits } from '~/services/link.service'
+import HttpStatus from '~/util/http-status'
 
 const NotFoundResponse = new Response('Not Found', {
-  status: 404,
+  status: HttpStatus.NOT_FOUND,
 })
 
 export const loader: LoaderFunction = async ({ params }) => {

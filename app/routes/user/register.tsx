@@ -5,6 +5,7 @@ import { z } from 'zod'
 import Link from '~/components/Link'
 import { createUser, doesUserExist } from '~/services/user.service'
 import { parseZodError } from '~/util/errors.server'
+import HttpStatus from '~/util/http-status'
 
 const FormDataSchema = z
   .object({
@@ -25,7 +26,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (!result.success) {
     return json<ActionData>(
       { errors: parseZodError(result.error) },
-      { status: 400 }
+      { status: HttpStatus.BAD_REQUEST }
     )
   }
 
@@ -33,7 +34,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (await doesUserExist(email)) {
     return json<ActionData>(
       { errors: { email: 'A User with that email already exists' } },
-      { status: 409 }
+      { status: HttpStatus.CONFLICT }
     )
   }
   await createUser(email, password)
