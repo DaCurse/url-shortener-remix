@@ -69,7 +69,7 @@ export default function Register() {
     <Box component="section" justifyContent="center">
       <header>
         <Typography component="h2" variant="h5">
-          Sign up
+          Register
         </Typography>
       </header>
       <Typography>
@@ -122,7 +122,7 @@ export default function Register() {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Sign Up
+          Submit
         </Button>
 
         <Link to="/user/login" variant="body2">

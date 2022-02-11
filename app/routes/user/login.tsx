@@ -22,7 +22,7 @@ export default function Login() {
     <Box component="section" justifyContent="center">
       <header>
         <Typography component="h2" variant="h5">
-          Sign in
+          Login
         </Typography>
       </header>
       <Typography>
@@ -57,7 +57,7 @@ export default function Login() {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Sign In
+          Submit
         </Button>
         <Grid container>
           <Grid item xs>
