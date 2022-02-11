@@ -1,7 +1,30 @@
 import { Box, Button, TextField, Typography } from '@mui/material'
-import type { MetaFunction } from 'remix'
-import { Form } from 'remix'
+import { ActionFunction, Form, json, MetaFunction, useActionData } from 'remix'
+import { z } from 'zod'
 import Link from '~/components/Link'
+import { parseZodError } from '~/util/errors.server'
+
+const FormDataSchema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().min(6),
+    confirm: z.string(),
+  })
+  .refine(data => data.password === data.confirm, {
+    message: "Passwords don't match",
+    path: ['confirm'],
+  })
+
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData()
+  const result = FormDataSchema.safeParse(Object.fromEntries(formData))
+
+  if (!result.success) {
+    return json({ errors: parseZodError(result.error) }, { status: 400 })
+  }
+
+  return null
+}
 
 export const meta: MetaFunction = () => {
   return {
@@ -10,6 +33,7 @@ export const meta: MetaFunction = () => {
 }
 
 export default function Register() {
+  const actionData = useActionData()
   return (
     <Box component="section" justifyContent="center">
       <header>
@@ -25,6 +49,8 @@ export default function Register() {
           margin="normal"
           required
           fullWidth
+          error={actionData?.errors?.email}
+          helperText={actionData?.errors?.email}
           type="email"
           name="email"
           label="Email Address"
@@ -35,6 +61,8 @@ export default function Register() {
           margin="normal"
           required
           fullWidth
+          error={actionData?.errors?.password}
+          helperText={actionData?.errors?.password}
           name="password"
           label="Password"
           type="password"
@@ -43,7 +71,9 @@ export default function Register() {
           margin="normal"
           required
           fullWidth
-          name="password-confirm"
+          error={actionData?.errors?.confirm}
+          helperText={actionData?.errors?.confirm}
+          name="confirm"
           label="Confirm Password"
           type="password"
         />
