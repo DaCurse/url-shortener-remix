@@ -17,6 +17,17 @@ app.use(express.static('public', { maxAge: '1h' }))
 app.use(express.static('public/build', { immutable: true, maxAge: '1y' }))
 
 app.use(morgan('tiny'))
+
+app.use((req, res, next) => {
+  if (req.path.endsWith('/') && req.path.length > 1) {
+    const query = req.url.slice(req.path.length)
+    const safePath = req.path.slice(0, -1).replace(/\/+/g, '/')
+    res.redirect(301, safePath + query)
+  } else {
+    next()
+  }
+})
+
 app.all(
   '*',
   MODE === 'production'
