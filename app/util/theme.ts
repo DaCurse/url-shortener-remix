@@ -1,4 +1,4 @@
-import { createTheme, Theme } from '@mui/material'
+import { createTheme } from '@mui/material'
 
 const darkTheme = createTheme({
   palette: {
@@ -12,15 +12,15 @@ const lightTheme = createTheme({
   },
 })
 
-const themes: Record<string, Theme> = {
+export const themes = {
   dark: darkTheme,
   light: lightTheme,
 }
 
-export const DEFAULT_THEME = 'dark'
-
-export function getTheme(themeName: string = DEFAULT_THEME): Theme {
+export function isValidTheme(themeName: string): themeName is ThemeName {
   return themes.hasOwnProperty(themeName)
-    ? themes[themeName]
-    : themes[DEFAULT_THEME]
 }
+
+export type ThemeName = keyof typeof themes
+
+export const DEFAULT_THEME: ThemeName = 'dark'

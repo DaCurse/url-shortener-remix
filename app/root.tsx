@@ -30,7 +30,8 @@ import {
 import Layout from './components/Layout'
 import Link from './components/Link'
 import ClientStyleContext from './material/ClientStyleContext.client'
-import { getTheme } from './util/theme'
+import type { ThemeName } from './util/theme'
+import { DEFAULT_THEME, themes } from './util/theme'
 import { getUserTheme } from './util/theme.server'
 
 export const headers: HeadersFunction = () => ({
@@ -47,12 +48,12 @@ export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: nProgressStyles }]
 }
 
-export type RootLoaderData = { userTheme: string }
+export type RootLoaderData = { themeName: ThemeName }
 
 export const loader: LoaderFunction = async ({
   request,
 }): Promise<RootLoaderData> => {
-  return { userTheme: await getUserTheme(request) }
+  return { themeName: await getUserTheme(request) }
 }
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
@@ -69,12 +70,12 @@ interface DocumentProps {
 const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
     const loaderData = useLoaderData<RootLoaderData>()
-    const theme = getTheme(loaderData?.userTheme)
+    const theme = themes[loaderData?.themeName ?? DEFAULT_THEME]
     const transition = useTransition()
     const clientStyleData = useContext(ClientStyleContext)
 
     useEffect(() => {
-      // When the state is idle then we can to complete the progress bar
+      // When the state is idle then we can complete the progress bar
       if (transition.state === 'idle') nProgress.done()
       // And when it's something else it means it's either submitting a form or
       // waiting for the loaders of the next location so we start it
@@ -140,7 +141,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
     <Document>
       <Alert severity="error" sx={{ mt: 2 }}>
         <AlertTitle>Error</AlertTitle>
-        <Typography>An unknown error occured!</Typography>
+        <Typography>An unknown error occurred!</Typography>
         {process.env.NODE_ENV === 'development' && (
           <pre style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>
             {error.stack}
@@ -162,6 +163,7 @@ export function CatchBoundary() {
         <AlertTitle>
           {caught.status} - {caught.statusText}
         </AlertTitle>
+        <Typography>{caught.data}</Typography>
         <Link to="/" variant="body1">
           Go back
         </Link>

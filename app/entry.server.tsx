@@ -5,7 +5,7 @@ import { renderToString } from 'react-dom/server'
 import type { EntryContext } from 'remix'
 import { RemixServer } from 'remix'
 import createEmotionCache from './material/create-emotion-cache'
-import { getTheme } from './util/theme'
+import { themes } from './util/theme'
 import { getUserTheme } from './util/theme.server'
 
 export default async function handleRequest(
@@ -16,9 +16,7 @@ export default async function handleRequest(
 ) {
   const cache = createEmotionCache()
   const { extractCriticalToChunks } = createEmotionServer(cache)
-
-  const userTheme = await getUserTheme(request)
-  const theme = getTheme(userTheme)
+  const theme = themes[await getUserTheme(request)]
   const MuiRemixServer = () => (
     <CacheProvider value={cache}>
       <ThemeProvider theme={theme}>

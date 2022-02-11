@@ -1,6 +1,6 @@
 import GitHubIcon from '@mui/icons-material/GitHub'
 import { Box, Grid, IconButton, Tooltip } from '@mui/material'
-import ThemeSwitcher from './ThemeSwitcher'
+import ThemeToggle from './ThemeToggle'
 
 export default function Footer() {
   return (
@@ -19,7 +19,7 @@ export default function Footer() {
           </Tooltip>
         </Grid>
         <Grid item xs>
-          <ThemeSwitcher />
+          <ThemeToggle />
         </Grid>
       </Grid>
     </Box>

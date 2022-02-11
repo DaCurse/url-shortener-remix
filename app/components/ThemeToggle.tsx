@@ -4,27 +4,27 @@ import { IconButton, Tooltip } from '@mui/material'
 import { useFetcher, useLoaderData } from 'remix'
 import type { RootLoaderData } from '~/root'
 
-export default function ThemeSwitcher() {
+export default function ThemeToggle() {
   const loaderData = useLoaderData<RootLoaderData>()
   const fetcher = useFetcher()
 
   return (
     <fetcher.Form
       method="post"
-      action="/setTheme"
+      action="/set-theme"
       style={{ display: 'inline-block' }}
     >
       <input
         type="hidden"
-        name="theme"
-        value={loaderData?.userTheme === 'light' ? 'dark' : 'light'}
+        name="theme-name"
+        value={loaderData?.themeName === 'dark' ? 'light' : 'dark'}
       />
       <Tooltip title="Toggle theme">
         <IconButton type="submit" aria-label="Toggle theme">
-          {loaderData?.userTheme === 'light' ? (
-            <Brightness7Icon />
-          ) : (
+          {loaderData?.themeName === 'dark' ? (
             <Brightness2Icon />
+          ) : (
+            <Brightness7Icon />
           )}
         </IconButton>
       </Tooltip>
