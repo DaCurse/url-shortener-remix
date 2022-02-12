@@ -137,8 +137,8 @@ export default function Shorten() {
         </Grid>
       )}
       <Grid item sx={{ width: '100%' }}>
-        {loaderData?.loggedUser ? (
-          <Alert severity="info">Logged in as {loaderData?.loggedUser}</Alert>
+        {loaderData.loggedUser ? (
+          <Alert severity="info">Logged in as {loaderData.loggedUser}</Alert>
         ) : (
           <Alert severity="info">
             <Link to="/user/login">Login</Link> or{' '}

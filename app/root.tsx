@@ -48,7 +48,7 @@ export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: nProgressStyles }]
 }
 
-export type RootLoaderData = { themeName: ThemeName; loggedUser?: string }
+export type RootLoaderData = { themeName: ThemeName }
 
 export const loader: LoaderFunction = async ({ request }) => {
   return json<RootLoaderData>({ themeName: await getUserTheme(request) })
