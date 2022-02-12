@@ -12,13 +12,20 @@ import {
   Tooltip,
 } from '@mui/material'
 import { useEffect, useRef } from 'react'
-import type { ActionFunction, MetaFunction } from 'remix'
-import { Form, useActionData, useTransition } from 'remix'
+import type { ActionFunction, LoaderFunction, MetaFunction } from 'remix'
+import { Form, json, useActionData, useLoaderData, useTransition } from 'remix'
 import Link from '~/components/Link'
 import { createLink } from '~/services/link.service'
+import { getSession } from '~/session.server'
 import { ShortenFormData } from '~/util/schemas.server'
 
+type LoaderData = { loggedUser?: string }
 type ActionData = { shortenedUrl?: string; error?: string }
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const session = await getSession(request.headers.get('Cookie'))
+  return json<LoaderData>({ loggedUser: session.get('user')?.email })
+}
 
 export const action: ActionFunction = async ({
   request,
@@ -72,6 +79,7 @@ function SuccessAlert({ url }: { url: string }) {
 }
 
 export default function Shorten() {
+  const loaderData = useLoaderData<LoaderData>()
   const actionData = useActionData<ActionData>()
   const transition = useTransition()
   const state: 'idle' | 'submitting' | 'error' = transition.submission
@@ -129,11 +137,15 @@ export default function Shorten() {
         </Grid>
       )}
       <Grid item sx={{ width: '100%' }}>
-        <Alert severity="info">
-          <Link to="/user/login">Login</Link> or{' '}
-          <Link to="/user/register">Register</Link> to create vanity links and
-          view statistics
-        </Alert>
+        {loaderData?.loggedUser ? (
+          <Alert severity="info">Logged in as {loaderData?.loggedUser}</Alert>
+        ) : (
+          <Alert severity="info">
+            <Link to="/user/login">Login</Link> or{' '}
+            <Link to="/user/register">Register</Link> to create vanity links and
+            view statistics
+          </Alert>
+        )}
       </Grid>
     </Grid>
   )

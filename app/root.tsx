@@ -17,6 +17,7 @@ import type {
   ShouldReloadFunction,
 } from 'remix'
 import {
+  json,
   Links,
   LiveReload,
   Meta,
@@ -48,12 +49,10 @@ export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: nProgressStyles }]
 }
 
-export type RootLoaderData = { themeName: ThemeName }
+export type RootLoaderData = { themeName: ThemeName; loggedUser?: string }
 
-export const loader: LoaderFunction = async ({
-  request,
-}): Promise<RootLoaderData> => {
-  return { themeName: await getUserTheme(request) }
+export const loader: LoaderFunction = async ({ request }) => {
+  return json<RootLoaderData>({ themeName: await getUserTheme(request) })
 }
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
