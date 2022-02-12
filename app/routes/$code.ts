@@ -3,16 +3,18 @@ import { redirect } from 'remix'
 import { getLink, incrementLinkVisits } from '~/services/link.service'
 import HttpStatus from '~/util/http-status.server'
 
-const NotFoundResponse = new Response('Link not found', {
-  status: HttpStatus.NOT_FOUND,
-})
-
 export const loader: LoaderFunction = async ({ params }) => {
   const { code } = params
-  if (!code) throw NotFoundResponse
+  if (!code)
+    throw new Response('Link not found', {
+      status: HttpStatus.NOT_FOUND,
+    })
 
   const link = await getLink(code)
-  if (!link) throw NotFoundResponse
+  if (!link)
+    throw new Response('Link not found', {
+      status: HttpStatus.NOT_FOUND,
+    })
 
   incrementLinkVisits(code)
 
