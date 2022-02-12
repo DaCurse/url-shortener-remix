@@ -1,0 +1,9 @@
+Features:
+  ☐ Display indicator when user is logged in @created(Sat 12/02/2022 17:56)
+  ☐ Add option to log out @created(Sat 12/02/2022 17:56)
+  ☐ Assign created links to user when user is logged in @created(Sat 12/02/2022 17:58)
+  ☐ Allow logged in users to choose a vanity code for their link @created(Sat 12/02/2022 18:02)
+  User dashboard:
+    ☐ Display all links created by a user in a table @created(Sat 12/02/2022 17:59)
+    ☐ Collect more info when a link is visited (User-Agent, IP, Date) @created(Sat 12/02/2022 17:59)
+    ☐ Create a page for each link, visualizing data in different ways @created(Sat 12/02/2022 18:01)
