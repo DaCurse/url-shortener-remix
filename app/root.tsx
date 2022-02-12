@@ -14,7 +14,6 @@ import type {
   LinksFunction,
   LoaderFunction,
   MetaFunction,
-  ShouldReloadFunction,
 } from 'remix'
 import {
   json,
@@ -53,13 +52,6 @@ export type RootLoaderData = { themeName: ThemeName; loggedUser?: string }
 
 export const loader: LoaderFunction = async ({ request }) => {
   return json<RootLoaderData>({ themeName: await getUserTheme(request) })
-}
-
-export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
-  // Disable reload of theme when another mutation is in place, `submission` is
-  // `undefined` when using a fetcher.Form - this is a bug, so this is a hacky
-  // fix for now
-  return !submission
 }
 
 interface DocumentProps {
