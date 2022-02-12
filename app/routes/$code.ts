@@ -3,7 +3,7 @@ import { redirect } from 'remix'
 import { getLink, incrementLinkVisits } from '~/services/link.service'
 import HttpStatus from '~/util/http-status'
 
-const NotFoundResponse = new Response('Not Found', {
+const NotFoundResponse = new Response('Link not found', {
   status: HttpStatus.NOT_FOUND,
 })
 
