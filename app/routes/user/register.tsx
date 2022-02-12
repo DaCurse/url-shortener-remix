@@ -5,7 +5,7 @@ import { z } from 'zod'
 import Link from '~/components/Link'
 import { createUser, doesUserExist } from '~/services/user.service'
 import { parseZodError } from '~/util/errors.server'
-import HttpStatus from '~/util/http-status'
+import HttpStatus from '~/util/http-status.server'
 
 const FormDataSchema = z
   .object({

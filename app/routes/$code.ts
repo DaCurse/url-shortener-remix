@@ -1,7 +1,7 @@
 import type { LoaderFunction } from 'remix'
 import { redirect } from 'remix'
 import { getLink, incrementLinkVisits } from '~/services/link.service'
-import HttpStatus from '~/util/http-status'
+import HttpStatus from '~/util/http-status.server'
 
 const NotFoundResponse = new Response('Link not found', {
   status: HttpStatus.NOT_FOUND,
