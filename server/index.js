@@ -2,7 +2,10 @@ const path = require('path')
 const express = require('express')
 const compression = require('compression')
 const morgan = require('morgan')
+const dotenv = require('dotenv')
 const { createRequestHandler } = require('@remix-run/express')
+
+dotenv.config()
 
 const MODE = process.env.NODE_ENV
 const BUILD_DIR = path.join(process.cwd(), 'server/build')

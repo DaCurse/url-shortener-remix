@@ -21,6 +21,7 @@ specifiers:
   aws-sdk: ^2.1073.0
   compression: ^1.7.4
   cross-env: ^7.0.3
+  dotenv: ^16.0.0
   eslint: ^8.8.0
   eslint-config-prettier: ^8.3.0
   eslint-plugin-prettier: ^4.0.0
@@ -53,6 +54,7 @@ dependencies:
   argon2: 0.28.4
   compression: 1.7.4
   cross-env: 7.0.3
+  dotenv: 16.0.0
   express: 4.17.2
   morgan: 1.10.0
   nanoid: 3.2.0
@@ -2125,6 +2127,11 @@ packages:
     dependencies:
       '@babel/runtime': 7.17.2
       csstype: 3.0.10
+    dev: false
+
+  /dotenv/16.0.0:
+    resolution: {integrity: sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==}
+    engines: {node: '>=12'}
     dev: false
 
   /duplexer2/0.1.4:

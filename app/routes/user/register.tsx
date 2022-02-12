@@ -1,13 +1,25 @@
 import { Alert, Box, Button, TextField, Typography } from '@mui/material'
 import { useEffect, useRef } from 'react'
-import { ActionFunction, Form, json, MetaFunction, useActionData } from 'remix'
+import type { ActionFunction, LoaderFunction, MetaFunction } from 'remix'
+import { Form, json, redirect, useActionData } from 'remix'
 import Link from '~/components/Link'
 import { createUser, doesUserExist } from '~/services/user.service'
+import { getSession } from '~/session.server'
 import { parseZodError } from '~/util/errors.server'
 import HttpStatus from '~/util/http-status.server'
 import { RegisterFormData } from '~/util/schemas.server'
 
 type ActionData = { success?: true; errors?: Record<string, string> }
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const session = await getSession(request.headers.get('Cookie'))
+
+  if (session.has('userId')) {
+    return redirect('/')
+  }
+
+  return json(null)
+}
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData()

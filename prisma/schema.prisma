@@ -17,8 +17,16 @@ model Link {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  password String @db.VarChar(128)
+  id       String    @id @default(uuid())
+  email    String    @unique
+  password String    @db.VarChar(128)
   links    Link[]
+  sessions Session[]
+}
+
+model Session {
+  id      String   @id @default(uuid())
+  expires DateTime
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String
 }

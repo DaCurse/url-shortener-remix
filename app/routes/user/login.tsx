@@ -7,26 +7,52 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import type { ActionFunction, MetaFunction } from 'remix'
-import { Form, json, useActionData } from 'remix'
+import type { ActionFunction, LoaderFunction, MetaFunction } from 'remix'
+import { Form, json, redirect, useActionData } from 'remix'
 import Link from '~/components/Link'
 import { loginUser } from '~/services/user.service'
+import { commitSession, getSession } from '~/session.server'
 import HttpStatus from '~/util/http-status.server'
 import { LoginFormData } from '~/util/schemas.server'
 
 type ActionData = { error?: string }
 
+export const loader: LoaderFunction = async ({ request }) => {
+  const session = await getSession(request.headers.get('Cookie'))
+  console.log(session.id, session.data)
+
+  if (session.has('userId')) {
+    return redirect('/')
+  }
+
+  return json(null)
+}
+
 export const action: ActionFunction = async ({ request }) => {
+  const session = await getSession(request.headers.get('Cookie'))
   const formData = await request.formData()
+
   try {
-    const { email, password } = LoginFormData.parse(
+    const { email, password, remember } = LoginFormData.parse(
       Object.fromEntries(formData)
     )
-    loginUser(email, password)
+    const user = await loginUser(email, password)
+
+    session.set('userId', user.id)
+
+    return redirect('/', {
+      headers: {
+        'Set-Cookie': await commitSession(session, {
+          maxAge: remember ? 604_800 : 3600,
+        }),
+      },
+    })
   } catch {
     return json<ActionData>(
       { error: 'Invalid email or password' },
-      { status: HttpStatus.UNAUTHORIZED }
+      {
+        status: HttpStatus.UNAUTHORIZED,
+      }
     )
   }
 }

@@ -18,4 +18,5 @@ export const RegisterFormData = z
 export const LoginFormData = z.object({
   email: z.string(),
   password: z.string(),
+  remember: z.boolean().default(false),
 })
