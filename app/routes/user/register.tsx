@@ -1,28 +1,17 @@
 import { Alert, Box, Button, TextField, Typography } from '@mui/material'
 import { useEffect, useRef } from 'react'
 import { ActionFunction, Form, json, MetaFunction, useActionData } from 'remix'
-import { z } from 'zod'
 import Link from '~/components/Link'
 import { createUser, doesUserExist } from '~/services/user.service'
 import { parseZodError } from '~/util/errors.server'
 import HttpStatus from '~/util/http-status.server'
-
-const FormDataSchema = z
-  .object({
-    email: z.string().email(),
-    password: z.string().min(6),
-    confirm: z.string(),
-  })
-  .refine(data => data.password === data.confirm, {
-    message: "Passwords don't match",
-    path: ['confirm'],
-  })
+import { RegisterFormData } from '~/util/schemas.server'
 
 type ActionData = { success?: true; errors?: Record<string, string> }
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData()
-  const result = FormDataSchema.safeParse(Object.fromEntries(formData))
+  const result = RegisterFormData.safeParse(Object.fromEntries(formData))
   if (!result.success) {
     return json<ActionData>(
       { errors: parseZodError(result.error) },

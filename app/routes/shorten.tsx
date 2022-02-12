@@ -14,13 +14,9 @@ import {
 import { useEffect, useRef } from 'react'
 import type { ActionFunction, MetaFunction } from 'remix'
 import { Form, useActionData, useTransition } from 'remix'
-import { z } from 'zod'
 import Link from '~/components/Link'
 import { createLink } from '~/services/link.service'
-
-const FormDataSchema = z.object({
-  url: z.string().url(),
-})
+import { ShortenFormData } from '~/util/schemas.server'
 
 type ActionData = { shortenedUrl?: string; error?: string }
 
@@ -28,7 +24,7 @@ export const action: ActionFunction = async ({
   request,
 }): Promise<ActionData> => {
   const formData = await request.formData()
-  const result = FormDataSchema.safeParse(Object.fromEntries(formData))
+  const result = ShortenFormData.safeParse(Object.fromEntries(formData))
   if (!result.success) {
     return { error: result.error.issues[0].message }
   }
