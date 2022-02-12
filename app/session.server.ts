@@ -53,7 +53,7 @@ const { getSession, commitSession, destroySession } =
     httpOnly: true,
     maxAge: DEFAULT_MAX_AGE,
     sameSite: 'lax',
-    secrets: [process.env.SESSION_SECRET || DEFAULT_SECRET, DEFAULT_SECRET],
+    secrets: [process.env.SESSION_SECRET || DEFAULT_SECRET],
   })
 
 export { getSession, commitSession, destroySession }
