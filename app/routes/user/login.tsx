@@ -7,9 +7,29 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import type { MetaFunction } from 'remix'
-import { Form } from 'remix'
+import type { ActionFunction, MetaFunction } from 'remix'
+import { Form, json, useActionData } from 'remix'
 import Link from '~/components/Link'
+import { loginUser } from '~/services/user.service'
+import HttpStatus from '~/util/http-status.server'
+import { LoginFormData } from '~/util/schemas.server'
+
+type ActionData = { error?: string }
+
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData()
+  try {
+    const { email, password } = LoginFormData.parse(
+      Object.fromEntries(formData)
+    )
+    loginUser(email, password)
+  } catch {
+    return json<ActionData>(
+      { error: 'Invalid email or password' },
+      { status: HttpStatus.UNAUTHORIZED }
+    )
+  }
+}
 
 export const meta: MetaFunction = () => {
   return {
@@ -18,6 +38,8 @@ export const meta: MetaFunction = () => {
 }
 
 export default function Login() {
+  const actionData = useActionData()
+
   return (
     <Box component="section" justifyContent="center">
       <header>
@@ -33,6 +55,8 @@ export default function Login() {
           margin="normal"
           required
           fullWidth
+          error={!!actionData?.error}
+          helperText={actionData?.error}
           type="email"
           name="email"
           label="Email Address"
