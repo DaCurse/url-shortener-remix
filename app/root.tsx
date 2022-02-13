@@ -27,7 +27,6 @@ import {
   useLoaderData,
   useTransition,
 } from 'remix'
-import Layout from './components/Layout'
 import Link from './components/Link'
 import ClientStyleContext from './material/ClientStyleContext.client'
 import type { ThemeName } from './util/theme'
@@ -108,7 +107,7 @@ const Document = withEmotionCache(
         <body>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Layout>{children}</Layout>
+            {children}
           </ThemeProvider>
           <ScrollRestoration />
           <Scripts />

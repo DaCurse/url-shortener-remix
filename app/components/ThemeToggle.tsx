@@ -1,11 +1,12 @@
 import Brightness2Icon from '@mui/icons-material/Brightness2'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
 import { IconButton, Tooltip } from '@mui/material'
-import { useFetcher, useLoaderData } from 'remix'
+import { useFetcher, useMatches } from 'remix'
 import type { RootLoaderData } from '~/root'
 
 export default function ThemeToggle() {
-  const loaderData = useLoaderData<RootLoaderData>()
+  const rootLoaderData = useMatches().find(match => match.id === 'root')
+    ?.data as RootLoaderData | undefined
   const fetcher = useFetcher()
 
   return (
@@ -17,11 +18,11 @@ export default function ThemeToggle() {
       <input
         type="hidden"
         name="theme"
-        value={loaderData?.themeName === 'dark' ? 'light' : 'dark'}
+        value={rootLoaderData?.themeName === 'dark' ? 'light' : 'dark'}
       />
       <Tooltip title="Toggle theme">
         <IconButton type="submit" aria-label="Toggle theme">
-          {loaderData?.themeName === 'dark' ? (
+          {rootLoaderData?.themeName === 'dark' ? (
             <Brightness2Icon />
           ) : (
             <Brightness7Icon />

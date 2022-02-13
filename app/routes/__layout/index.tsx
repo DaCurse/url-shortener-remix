@@ -7,7 +7,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  Link as MUILink,
+  Link as MuiLink,
   TextField,
   Tooltip,
 } from '@mui/material'
@@ -71,14 +71,14 @@ function SuccessAlert({ url }: { url: string }) {
   return (
     <Alert sx={{ mt: 1 }} severity="success" action={<CopyButton data={url} />}>
       Link created:{' '}
-      <MUILink href={url} target="_blank" rel="noreferrer">
+      <MuiLink href={url} target="_blank" rel="noreferrer">
         {url}
-      </MUILink>
+      </MuiLink>
     </Alert>
   )
 }
 
-export default function Shorten() {
+export default function Index() {
   const loaderData = useLoaderData<LoaderData>()
   const actionData = useActionData<ActionData>()
   const transition = useTransition()
