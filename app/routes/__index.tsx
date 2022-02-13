@@ -51,7 +51,7 @@ function Footer() {
     </Box>
   )
 }
-export default function Layout() {
+export default function IndexLayout() {
   return (
     <Container component="main" maxWidth="xs">
       <Box
