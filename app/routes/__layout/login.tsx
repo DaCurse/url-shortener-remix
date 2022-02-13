@@ -74,7 +74,7 @@ export default function Login() {
         </Typography>
       </header>
       <Typography>
-        <Link to="/shorten">← Go back</Link>
+        <Link to="/">← Go back</Link>
       </Typography>
       <Form method="post">
         <TextField
@@ -111,12 +111,12 @@ export default function Login() {
         </Button>
         <Grid container>
           <Grid item xs>
-            <Link to="/user/forgotPassword" variant="body2">
+            <Link to="/forgotPassword" variant="body2">
               Forgot password?
             </Link>
           </Grid>
           <Grid item>
-            <Link to="/user/register" variant="body2">
+            <Link to="/register" variant="body2">
               Don't have an account? Sign Up
             </Link>
           </Grid>

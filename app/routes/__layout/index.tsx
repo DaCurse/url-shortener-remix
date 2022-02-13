@@ -141,9 +141,9 @@ export default function Index() {
           <Alert severity="info">Logged in as {loaderData.loggedUser}</Alert>
         ) : (
           <Alert severity="info">
-            <Link to="/user/login">Login</Link> or{' '}
-            <Link to="/user/register">Register</Link> to create vanity links and
-            view statistics
+            <Link to="/login">Login</Link> or{' '}
+            <Link to="/register">Register</Link> to create vanity links and view
+            statistics
           </Alert>
         )}
       </Grid>

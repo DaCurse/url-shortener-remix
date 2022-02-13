@@ -74,7 +74,7 @@ export default function Register() {
         </Typography>
       </header>
       <Typography>
-        <Link to="/shorten">← Go back</Link>
+        <Link to="/">← Go back</Link>
       </Typography>
       <Form method="post">
         <TextField
@@ -114,7 +114,7 @@ export default function Register() {
         />
         {actionData?.success && (
           <Alert sx={{ mt: 1 }} severity="success">
-            Account successfully created, <Link to="/user/login">login</Link>.
+            Account successfully created, <Link to="/login">login</Link>.
           </Alert>
         )}
         <Button
@@ -126,7 +126,7 @@ export default function Register() {
           Submit
         </Button>
 
-        <Link to="/user/login" variant="body2">
+        <Link to="/login" variant="body2">
           Already have an account? Sign In
         </Link>
       </Form>
