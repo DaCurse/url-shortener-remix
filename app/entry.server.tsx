@@ -4,9 +4,9 @@ import { CssBaseline } from '@mui/material'
 import { renderToString } from 'react-dom/server'
 import type { EntryContext } from 'remix'
 import { RemixServer } from 'remix'
+import { themes } from './common/theme'
+import { getUserTheme } from './common/theme.server'
 import createEmotionCache from './material/create-emotion-cache'
-import { themes } from './util/theme'
-import { getUserTheme } from './util/theme.server'
 
 export default async function handleRequest(
   request: Request,

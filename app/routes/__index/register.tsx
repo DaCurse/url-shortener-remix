@@ -2,12 +2,12 @@ import { Alert, Box, Button, TextField, Typography } from '@mui/material'
 import { useEffect, useRef } from 'react'
 import type { ActionFunction, LoaderFunction, MetaFunction } from 'remix'
 import { Form, json, redirect, useActionData } from 'remix'
+import { parseZodError } from '~/common/errors.server'
+import HttpStatus from '~/common/http-status.server'
+import { RegisterFormData } from '~/common/schemas.server'
 import Link from '~/components/Link'
 import { createUser, doesUserExist } from '~/services/user.service'
 import { getSession } from '~/session.server'
-import { parseZodError } from '~/util/errors.server'
-import HttpStatus from '~/util/http-status.server'
-import { RegisterFormData } from '~/util/schemas.server'
 
 type ActionData = { success?: true; errors?: Record<string, string> }
 

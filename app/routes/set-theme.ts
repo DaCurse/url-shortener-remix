@@ -1,8 +1,8 @@
 import type { ActionFunction, LoaderFunction } from 'remix'
 import { redirect } from 'remix'
-import HttpStatus from '~/util/http-status.server'
-import { isValidTheme } from '~/util/theme'
-import { themeCookie } from '~/util/theme.server'
+import HttpStatus from '~/common/http-status.server'
+import { isValidTheme } from '~/common/theme'
+import { themeCookie } from '~/common/theme.server'
 
 export const loader: LoaderFunction = () => {
   throw new Response('Bad Request', { status: HttpStatus.BAD_REQUEST })

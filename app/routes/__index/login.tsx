@@ -9,11 +9,11 @@ import {
 } from '@mui/material'
 import type { ActionFunction, LoaderFunction, MetaFunction } from 'remix'
 import { Form, json, redirect, useActionData } from 'remix'
+import HttpStatus from '~/common/http-status.server'
+import { LoginFormData } from '~/common/schemas.server'
 import Link from '~/components/Link'
 import { loginUser } from '~/services/user.service'
 import { commitSession, getSession } from '~/session.server'
-import HttpStatus from '~/util/http-status.server'
-import { LoginFormData } from '~/util/schemas.server'
 
 type ActionData = { error?: string }
 

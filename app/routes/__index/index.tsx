@@ -14,10 +14,10 @@ import {
 import { useEffect, useRef } from 'react'
 import type { ActionFunction, LoaderFunction, MetaFunction } from 'remix'
 import { Form, json, useActionData, useLoaderData, useTransition } from 'remix'
+import { ShortenFormData } from '~/common/schemas.server'
 import Link from '~/components/Link'
 import { createLink } from '~/services/link.service'
 import { getSession } from '~/session.server'
-import { ShortenFormData } from '~/util/schemas.server'
 
 type LoaderData = { loggedUser?: string }
 type ActionData = { shortenedUrl?: string; error?: string }

@@ -27,11 +27,11 @@ import {
   useLoaderData,
   useTransition,
 } from 'remix'
+import type { ThemeName } from './common/theme'
+import { DEFAULT_THEME, themes } from './common/theme'
+import { getUserTheme } from './common/theme.server'
 import Link from './components/Link'
 import ClientStyleContext from './material/ClientStyleContext.client'
-import type { ThemeName } from './util/theme'
-import { DEFAULT_THEME, themes } from './util/theme'
-import { getUserTheme } from './util/theme.server'
 
 export const headers: HeadersFunction = () => ({
   'Accept-CH': 'Sec-CH-Prefers-Color-Scheme',
