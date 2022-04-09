@@ -1,7 +1,7 @@
 import type { LinkProps as MuiLinkProps } from '@mui/material'
 import { Link as MuiLink } from '@mui/material'
-import type { LinkProps as RemixLinkProps } from 'remix'
-import { Link as RemixLink } from 'remix'
+import type { LinkProps as RemixLinkProps } from '@remix-run/react'
+import { Link as RemixLink } from '@remix-run/react'
 
 type LinkProps = RemixLinkProps & MuiLinkProps
 

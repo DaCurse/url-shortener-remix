@@ -1,7 +1,12 @@
 import { Alert, Box, Button, TextField, Typography } from '@mui/material'
+import type {
+  ActionFunction,
+  LoaderFunction,
+  MetaFunction,
+} from '@remix-run/node'
+import { json, redirect } from '@remix-run/node'
+import { Form, useActionData } from '@remix-run/react'
 import { useEffect, useRef } from 'react'
-import type { ActionFunction, LoaderFunction, MetaFunction } from 'remix'
-import { Form, json, redirect, useActionData } from 'remix'
 import { parseZodError } from '~/common/errors.server'
 import HttpStatus from '~/common/http-status.server'
 import { RegisterFormData } from '~/common/schemas.server'

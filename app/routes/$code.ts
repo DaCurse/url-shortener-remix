@@ -1,5 +1,5 @@
-import type { LoaderFunction } from 'remix'
-import { redirect } from 'remix'
+import type { LoaderFunction } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
 import HttpStatus from '~/common/http-status.server'
 import { getLink, incrementLinkVisits } from '~/services/link.service'
 

@@ -7,8 +7,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import type { ActionFunction, LoaderFunction, MetaFunction } from 'remix'
-import { Form, json, redirect, useActionData } from 'remix'
+import type {
+  ActionFunction,
+  LoaderFunction,
+  MetaFunction,
+} from '@remix-run/node'
+import { json, redirect } from '@remix-run/node'
+import { Form, useActionData } from '@remix-run/react'
 import HttpStatus from '~/common/http-status.server'
 import { LoginFormData } from '~/common/schemas.server'
 import Link from '~/components/Link'

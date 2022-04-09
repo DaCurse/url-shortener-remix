@@ -9,7 +9,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { Outlet } from 'remix'
+import { Outlet } from '@remix-run/react'
 import ThemeToggle from '~/components/ThemeToggle'
 
 function Header() {

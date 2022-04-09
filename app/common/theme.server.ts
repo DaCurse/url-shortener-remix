@@ -1,5 +1,6 @@
-import { createCookie } from 'remix'
-import { DEFAULT_THEME, isValidTheme, ThemeName } from './theme'
+import { createCookie } from '@remix-run/node'
+import type { ThemeName } from './theme'
+import { DEFAULT_THEME, isValidTheme } from './theme'
 
 export const themeCookie = createCookie('theme', {
   maxAge: 31_536_000, // One year

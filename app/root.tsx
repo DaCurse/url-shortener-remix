@@ -6,17 +6,14 @@ import {
   Typography,
   unstable_useEnhancedEffect as useEnhancedEffect,
 } from '@mui/material'
-import nProgress from 'nprogress'
-import nProgressStyles from 'nprogress/nprogress.css'
-import { useContext, useEffect } from 'react'
 import type {
   HeadersFunction,
   LinksFunction,
   LoaderFunction,
   MetaFunction,
-} from 'remix'
+} from '@remix-run/node'
+import { json } from '@remix-run/node'
 import {
-  json,
   Links,
   LiveReload,
   Meta,
@@ -26,7 +23,10 @@ import {
   useCatch,
   useLoaderData,
   useTransition,
-} from 'remix'
+} from '@remix-run/react'
+import nProgress from 'nprogress'
+import nProgressStyles from 'nprogress/nprogress.css'
+import { useContext, useEffect } from 'react'
 import type { ThemeName } from './common/theme'
 import { DEFAULT_THEME, themes } from './common/theme'
 import { getUserTheme } from './common/theme.server'

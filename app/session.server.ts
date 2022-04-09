@@ -1,5 +1,5 @@
-import type { SessionIdStorageStrategy } from 'remix'
-import { createSessionStorage } from 'remix'
+import type { SessionIdStorageStrategy } from '@remix-run/node'
+import { createSessionStorage } from '@remix-run/node'
 import prisma from './db.server'
 
 const DEFAULT_MAX_AGE = 3600
