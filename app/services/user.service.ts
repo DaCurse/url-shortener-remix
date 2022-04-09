@@ -1,6 +1,6 @@
 import type { User } from '@prisma/client'
 import bcrypt from 'bcryptjs'
-import prisma from '~/db.server'
+import { prisma } from '~/db.server'
 
 const SALT_LENGTH = 10
 

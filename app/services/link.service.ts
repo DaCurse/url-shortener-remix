@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import prisma from '~/db.server'
+import { prisma } from '~/db.server'
 
 export async function createLink(url: string) {
   const code = nanoid(6)
