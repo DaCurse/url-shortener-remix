@@ -4,10 +4,14 @@ export const ShortenFormData = z.object({
   url: z.string().url(),
 })
 
+const MIN_PASSWORD_LENGTH = 6
+
 export const RegisterFormData = z
   .object({
     email: z.string().email(),
-    password: z.string().min(6),
+    password: z.string().min(MIN_PASSWORD_LENGTH, {
+      message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+    }),
     confirm: z.string(),
   })
   .refine(data => data.password === data.confirm, {
