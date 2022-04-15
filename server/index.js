@@ -3,6 +3,7 @@ const express = require('express')
 const compression = require('compression')
 const morgan = require('morgan')
 const { createRequestHandler } = require('@remix-run/express')
+const { startCronJobs } = require('./cron')
 
 const BUILD_DIR = path.join(process.cwd(), 'server/build')
 
@@ -55,6 +56,7 @@ const port = process.env.PORT || 3000
 
 app.listen(port, () => {
   console.log(`Express server listening on port ${port}`)
+  startCronJobs()
 })
 
 function purgeRequireCache() {
