@@ -1,6 +1,11 @@
 import type { SessionIdStorageStrategy } from '@remix-run/node'
 import { createSessionStorage } from '@remix-run/node'
-import { prisma } from './db.server'
+import {
+  createSession,
+  deleteSession,
+  getSessionById,
+  updateOrCreateSession,
+} from './models/session.server'
 
 const DEFAULT_MAX_AGE = 3600
 const DEFAULT_SECRET = 's3cr3t'
@@ -11,42 +16,30 @@ function createDatabaseSessionStorage(
   return createSessionStorage({
     cookie,
     async createData(data, expires) {
-      const { id } = await prisma.session.create({
-        select: { id: true },
-        data: {
-          userId: data.userId,
-          expires: expires || new Date(Date.now() + DEFAULT_MAX_AGE),
-        },
-      })
-      return id
+      return await createSession(
+        data.userId,
+        expires || new Date(Date.now() + DEFAULT_MAX_AGE)
+      )
     },
     async readData(id) {
-      return await prisma.session.findUnique({
-        where: { id },
-        include: { user: true },
-      })
+      return await getSessionById(id)
     },
     async updateData(id, data, expires) {
-      await prisma.session.upsert({
-        where: { id },
-        update: {
-          userId: data.userId,
-          expires,
-        },
-        create: {
-          id,
-          userId: data.userId,
-          expires: expires || new Date(Date.now() + DEFAULT_MAX_AGE),
-        },
-      })
+      if (expires && new Date() > expires) return
+      // TODO: Consider if upserting is necessary
+      await updateOrCreateSession(
+        id,
+        data.userId,
+        expires || new Date(Date.now() + DEFAULT_MAX_AGE)
+      )
     },
     async deleteData(id) {
-      await prisma.session.delete({ where: { id } })
+      await deleteSession(id)
     },
   })
 }
 
-const { getSession, commitSession, destroySession } =
+export const { getSession, commitSession, destroySession } =
   createDatabaseSessionStorage({
     name: '__session',
     path: '/',
@@ -55,5 +48,3 @@ const { getSession, commitSession, destroySession } =
     sameSite: 'lax',
     secrets: [process.env.SESSION_SECRET || DEFAULT_SECRET],
   })
-
-export { getSession, commitSession, destroySession }
