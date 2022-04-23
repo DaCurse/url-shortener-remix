@@ -10,17 +10,7 @@ export async function createLink(url: Link['url']) {
 
 export async function getLink(code: Link['code']) {
   const link = await prisma.link.findUnique({
-    select: {
-      url: true,
-    },
     where: { code },
   })
   return link
-}
-
-export async function incrementLinkVisits(code: Link['code']) {
-  await prisma.link.update({
-    where: { code },
-    data: { visits: { increment: 1 } },
-  })
 }

@@ -1,9 +1,11 @@
 import type { LoaderFunction } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
+import { getClientIP } from '~/common/get-client-ip'
 import HttpStatus from '~/common/http-status.server'
-import { getLink, incrementLinkVisits } from '~/models/link.server'
+import { getLink } from '~/models/link.server'
+import { createVisit } from '~/models/visit.server'
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   const { code } = params
   if (!code)
     throw new Response('Link not found', {
@@ -16,7 +18,12 @@ export const loader: LoaderFunction = async ({ params }) => {
       status: HttpStatus.NOT_FOUND,
     })
 
-  incrementLinkVisits(code)
+  createVisit(
+    link.id,
+    new Date(),
+    getClientIP(request),
+    request.headers.get('User-Agent') ?? 'unknown'
+  )
 
   return redirect(link.url)
 }

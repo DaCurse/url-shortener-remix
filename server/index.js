@@ -36,6 +36,13 @@ app.use((req, res, next) => {
   }
 })
 
+// Since you cannot access the client's remote address via Remix's request
+// object, we pass it via a custom header
+app.use((req, _res, next) => {
+  req.headers['X-Fallback-IP'] = req.socket.remoteAddress
+  next()
+})
+
 app.all(
   '*',
   process.env.NODE_ENV === 'development'

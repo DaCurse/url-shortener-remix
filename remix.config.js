@@ -7,4 +7,5 @@ module.exports = {
   publicPath: '/build/',
   serverBuildDirectory: 'server/build',
   ignoredRouteFiles: ['.*'],
+  serverDependenciesToBundle: ['is-ip', 'ip-regex'],
 }
