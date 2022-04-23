@@ -40,11 +40,21 @@ export const headers: HeadersFunction = () => ({
 export const meta: MetaFunction = () => {
   return {
     title: 'URL Shortener',
+    charSet: 'utf-8',
     description: 'A URL Shortener made with Remix',
+    viewport: 'width=device-width, initial-scale=1',
   }
 }
 export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: nProgressStyles }]
+  return [
+    { rel: 'stylesheet', href: nProgressStyles },
+    { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
+    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+    {
+      href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap',
+      rel: 'stylesheet',
+    },
+  ]
 }
 
 export type RootLoaderData = { themeName: ThemeName }
@@ -88,17 +98,9 @@ const Document = withEmotionCache(
     return (
       <html lang="en">
         <head>
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" />
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width,initial-scale=1" />
-          <meta name="theme-color" content={theme.palette.primary.main} />
           <Meta />
           <Links />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-            rel="stylesheet"
-          />
+          <meta name="theme-color" content={theme.palette.primary.main} />
           <meta
             name="emotion-insertion-point"
             content="emotion-insertion-point"
