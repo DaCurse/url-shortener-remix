@@ -8,12 +8,21 @@ datasource db {
 }
 
 model Link {
-  id     String  @id @default(uuid())
+  id     String      @id @default(uuid())
   url    String
-  code   String  @unique @db.VarChar(6)
-  visits Int     @default(0)
-  user   User?   @relation(fields: [userId], references: [id])
+  code   String      @unique @db.VarChar(6)
+  visits LinkVisit[]
+  user   User?       @relation(fields: [userId], references: [id])
   userId String?
+}
+
+model LinkVisit {
+  id        String   @id @default(uuid())
+  Link      Link     @relation(fields: [linkId], references: [id])
+  linkId    String
+  visitedAt DateTime
+  ipAddress String   @db.VarChar(15)
+  userAgent String
 }
 
 model User {
