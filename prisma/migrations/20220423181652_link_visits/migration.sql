@@ -12,7 +12,7 @@ CREATE TABLE "Visit" (
     "id" TEXT NOT NULL,
     "linkId" TEXT NOT NULL,
     "visitedAt" TIMESTAMP(3) NOT NULL,
-    "ipAddress" VARCHAR(15) NOT NULL,
+    "ipAddress" VARCHAR(15),
     "userAgent" TEXT NOT NULL,
 
     CONSTRAINT "Visit_pkey" PRIMARY KEY ("id")
