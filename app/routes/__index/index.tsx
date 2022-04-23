@@ -70,11 +70,11 @@ function SubmitButton(props: IconButtonProps) {
 }
 
 function CopyButton({ data }: { data: string }) {
-  return (
+  return navigator.clipboard ? (
     <IconButton onClick={() => navigator.clipboard.writeText(data)}>
       <ContentCopyIcon />
     </IconButton>
-  )
+  ) : null
 }
 
 function SuccessAlert({ url }: { url: string }) {
