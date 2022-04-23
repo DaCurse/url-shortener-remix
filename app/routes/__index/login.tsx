@@ -17,7 +17,7 @@ import { Form, useActionData } from '@remix-run/react'
 import HttpStatus from '~/common/http-status.server'
 import { LoginFormData } from '~/common/schemas.server'
 import Link from '~/components/Link'
-import { loginUser } from '~/models/user.service'
+import { loginUser } from '~/models/user.server'
 import { commitSession, getSession } from '~/session.server'
 
 type ActionData = { error?: string }

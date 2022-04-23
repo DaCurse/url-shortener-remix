@@ -26,7 +26,7 @@ import {
 import { useEffect, useRef } from 'react'
 import { ShortenFormData } from '~/common/schemas.server'
 import Link from '~/components/Link'
-import { createLink } from '~/models/link.service'
+import { createLink } from '~/models/link.server'
 import { getSession } from '~/session.server'
 
 type LoaderData = { loggedUser?: string }

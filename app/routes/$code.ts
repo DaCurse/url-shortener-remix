@@ -1,7 +1,7 @@
 import type { LoaderFunction } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import HttpStatus from '~/common/http-status.server'
-import { getLink, incrementLinkVisits } from '~/models/link.service'
+import { getLink, incrementLinkVisits } from '~/models/link.server'
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { code } = params

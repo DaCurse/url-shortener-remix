@@ -11,7 +11,7 @@ import { parseZodError } from '~/common/errors.server'
 import HttpStatus from '~/common/http-status.server'
 import { RegisterFormData } from '~/common/schemas.server'
 import Link from '~/components/Link'
-import { createUser, doesUserExist } from '~/models/user.service'
+import { createUser, doesUserExist } from '~/models/user.server'
 import { getSession } from '~/session.server'
 
 type ActionData = { success?: true; errors?: Record<string, string> }
