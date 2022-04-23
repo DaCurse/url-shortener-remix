@@ -1,15 +1,21 @@
 import type { Session, User } from '@prisma/client'
 import { prisma } from '../db.server'
 
+export async function doesSessionExist(id: Session['id']) {
+  const session = await prisma.session.findUnique({
+    where: { id },
+  })
+  return !!session
+}
+
 export async function createSession(
   userId: User['id'],
   expires: Session['expires']
 ) {
-  const { id } = await prisma.session.create({
+  return await prisma.session.create({
     select: { id: true },
     data: { userId, expires },
   })
-  return id
 }
 
 export async function getSessionById(id: Session['id']) {
@@ -19,15 +25,14 @@ export async function getSessionById(id: Session['id']) {
   })
 }
 
-export async function updateOrCreateSession(
+export async function updateSession(
   id: Session['id'],
   userId: User['id'],
   expires: Session['expires']
 ) {
-  await prisma.session.upsert({
+  await prisma.session.update({
     where: { id },
-    update: { userId, expires },
-    create: { id, userId, expires },
+    data: { userId, expires },
   })
 }
 

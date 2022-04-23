@@ -24,7 +24,6 @@ type ActionData = { error?: string }
 
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get('Cookie'))
-  console.log(session.id, session.data)
 
   if (session.has('userId')) {
     return redirect('/')
