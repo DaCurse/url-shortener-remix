@@ -1,9 +1,9 @@
 import type { LoaderFunction } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { getClientIP } from '~/common/get-client-ip'
-import HttpStatus from '~/common/http-status.server'
-import { getLink } from '~/models/link.server'
-import { createVisit } from '~/models/visit.server'
+import HttpStatus from '~/common/http-status'
+import { getLink } from '~/models/link'
+import { createVisit } from '~/models/visit'
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const { code } = params

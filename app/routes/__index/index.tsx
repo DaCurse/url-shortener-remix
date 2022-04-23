@@ -24,9 +24,9 @@ import {
   useTransition,
 } from '@remix-run/react'
 import { useEffect, useRef } from 'react'
-import { ShortenFormData } from '~/common/schemas.server'
+import { ShortenFormData } from '~/common/schemas'
 import Link from '~/components/Link'
-import { createLink } from '~/models/link.server'
+import { createLink } from '~/models/link'
 import { getSession } from '~/session.server'
 
 type LoaderData = { loggedUser?: string }

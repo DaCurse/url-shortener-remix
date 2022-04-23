@@ -7,11 +7,11 @@ import type {
 import { json, redirect } from '@remix-run/node'
 import { Form, useActionData } from '@remix-run/react'
 import { useEffect, useRef } from 'react'
-import { parseZodError } from '~/common/errors.server'
-import HttpStatus from '~/common/http-status.server'
-import { RegisterFormData } from '~/common/schemas.server'
+import { parseZodError } from '~/common/errors'
+import HttpStatus from '~/common/http-status'
+import { RegisterFormData } from '~/common/schemas'
 import Link from '~/components/Link'
-import { createUser, doesUserExist } from '~/models/user.server'
+import { createUser, doesUserExist } from '~/models/user'
 import { getSession } from '~/session.server'
 
 type ActionData = { success?: true; errors?: Record<string, string> }

@@ -1,6 +1,6 @@
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import HttpStatus from '~/common/http-status.server'
+import HttpStatus from '~/common/http-status'
 import { isValidTheme } from '~/common/theme'
 import { themeCookie } from '~/common/theme.server'
 

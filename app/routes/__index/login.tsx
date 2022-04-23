@@ -14,10 +14,10 @@ import type {
 } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
 import { Form, useActionData } from '@remix-run/react'
-import HttpStatus from '~/common/http-status.server'
-import { LoginFormData } from '~/common/schemas.server'
+import HttpStatus from '~/common/http-status'
+import { LoginFormData } from '~/common/schemas'
 import Link from '~/components/Link'
-import { loginUser } from '~/models/user.server'
+import { loginUser } from '~/models/user'
 import { commitSession, getSession } from '~/session.server'
 
 type ActionData = { error?: string }

@@ -6,7 +6,7 @@ import {
   doesSessionExist,
   getSessionById,
   updateSession,
-} from './models/session.server'
+} from './models/session'
 
 const DEFAULT_MAX_AGE = 3600
 const DEFAULT_SECRET = 's3cr3t'
