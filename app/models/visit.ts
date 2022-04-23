@@ -3,9 +3,9 @@ import { prisma } from '~/db.server'
 
 export async function createVisit(
   linkId: Visit['linkId'],
-  visitedAt: Visit['visitedAt'],
+  userAgent: Visit['userAgent'],
   ipAddress: Visit['ipAddress'],
-  userAgent: Visit['userAgent']
+  visitedAt?: Visit['visitedAt']
 ) {
   await prisma.visit.create({
     data: {
@@ -14,9 +14,9 @@ export async function createVisit(
           id: linkId,
         },
       },
-      visitedAt,
-      ipAddress,
       userAgent,
+      ipAddress,
+      visitedAt,
     },
   })
 }

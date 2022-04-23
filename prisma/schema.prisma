@@ -20,9 +20,9 @@ model Visit {
   id        String   @id @default(uuid())
   link      Link     @relation(fields: [linkId], references: [id])
   linkId    String
-  visitedAt DateTime
-  ipAddress String?  @db.VarChar(45)
   userAgent String
+  visitedAt DateTime @default(now())
+  ipAddress String?  @db.VarChar(45)
 }
 
 model User {

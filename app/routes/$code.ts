@@ -20,9 +20,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   createVisit(
     link.id,
-    new Date(),
-    getClientIP(request),
-    request.headers.get('User-Agent') ?? 'unknown'
+    request.headers.get('User-Agent') ?? 'unknown',
+    getClientIP(request)
   )
 
   return redirect(link.url)

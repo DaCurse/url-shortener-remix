@@ -11,7 +11,7 @@ ALTER TABLE "Link" DROP COLUMN "visits";
 CREATE TABLE "Visit" (
     "id" TEXT NOT NULL,
     "linkId" TEXT NOT NULL,
-    "visitedAt" TIMESTAMP(3) NOT NULL,
+    "visitedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "ipAddress" VARCHAR(45),
     "userAgent" TEXT NOT NULL,
 
