@@ -22,9 +22,8 @@ app.use(
   express.static('public/build', { immutable: true, maxAge: '1y' })
 )
 
-// Everything else (like favicon.ico) is cached for an hour. You may want to be
-// more aggressive with this caching.
-app.use(express.static('public', { maxAge: '1h' }))
+// Caching for static assets.
+app.use(express.static('public', { maxAge: '1w' }))
 
 app.use(morgan('tiny'))
 
