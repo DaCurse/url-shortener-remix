@@ -1,5 +1,6 @@
 import type { LoaderFunction } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
+import invariant from 'tiny-invariant'
 import { getClientIP } from '~/common/get-client-ip'
 import HttpStatus from '~/common/http-status'
 import { getLink } from '~/models/link'
@@ -7,10 +8,7 @@ import { createVisit } from '~/models/visit'
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const { code } = params
-  if (!code)
-    throw new Response('Link not found', {
-      status: HttpStatus.NOT_FOUND,
-    })
+  invariant(typeof code === 'string', 'code is required')
 
   const link = await getLink(code)
   if (!link)
