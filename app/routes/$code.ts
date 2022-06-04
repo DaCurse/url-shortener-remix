@@ -6,7 +6,7 @@ import HttpStatus from '~/common/http-status'
 import { getLink } from '~/models/link'
 import { createVisit } from '~/models/visit'
 
-export const loader: LoaderFunction = async ({ request, params }) => {
+export const loader: LoaderFunction = async ({ request, params, context }) => {
   const { code } = params
   invariant(typeof code === 'string', 'code is required')
 
@@ -16,11 +16,9 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       status: HttpStatus.NOT_FOUND,
     })
 
-  createVisit(
-    link.id,
-    request.headers.get('User-Agent') ?? 'unknown',
-    getClientIP(request)
-  )
+  const userAgent = request.headers.get('User-Agent') ?? 'unknown'
+  const ipAddress = getClientIP(request) ?? context.clientIP
+  createVisit(link.id, userAgent, ipAddress)
 
   return redirect(link.url)
 }

@@ -1,9 +1,6 @@
 import { isIP } from 'is-ip'
 
 // List of headers in order of preference to determine the client's IP address.
-// `X-Fallback-IP` is a custom header set by an express middleware that contains
-// the client's remote address, as you cannot access it via Remix's Request
-// object
 const headerNames = [
   'X-Client-IP',
   'X-Forwarded-For',
@@ -16,7 +13,6 @@ const headerNames = [
   'X-Forwarded',
   'Forwarded-For',
   'Forwarded',
-  'X-Fallback-IP',
 ] as const
 
 // Taken from https://github.com/sergiodxa/remix-utils/blob/main/src/server/get-client-id-address.ts
