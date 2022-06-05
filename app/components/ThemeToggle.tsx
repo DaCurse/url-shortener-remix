@@ -2,7 +2,7 @@ import Brightness2Icon from '@mui/icons-material/Brightness2'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
 import { IconButton, Tooltip } from '@mui/material'
 import { useFetcher, useMatches } from '@remix-run/react'
-import type { RootLoaderData } from '~/root'
+import type { LoaderData as RootLoaderData } from '~/root'
 
 export default function ThemeToggle() {
   const rootLoaderData = useMatches().find(match => match.id === 'root')

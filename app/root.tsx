@@ -33,6 +33,14 @@ import { getUserTheme } from './common/theme.server'
 import Link from './components/Link'
 import ClientStyleContext from './material/ClientStyleContext.client'
 
+export interface LoaderData {
+  themeName: ThemeName
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+  return json<LoaderData>({ themeName: await getUserTheme(request) })
+}
+
 export const headers: HeadersFunction = () => ({
   'Accept-CH': 'Sec-CH-Prefers-Color-Scheme',
 })
@@ -55,12 +63,6 @@ export const links: LinksFunction = () => {
       rel: 'stylesheet',
     },
   ]
-}
-
-export type RootLoaderData = { themeName: ThemeName }
-
-export const loader: LoaderFunction = async ({ request }) => {
-  return json<RootLoaderData>({ themeName: await getUserTheme(request) })
 }
 
 interface DocumentProps {
@@ -121,7 +123,7 @@ const Document = withEmotionCache(
 )
 
 export default function App() {
-  const loaderData = useLoaderData<RootLoaderData>()
+  const loaderData = useLoaderData<LoaderData>()
   return (
     <Document themeName={loaderData.themeName}>
       <Outlet />
