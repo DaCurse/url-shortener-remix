@@ -29,12 +29,17 @@ import Link from '~/components/Link'
 import { createLink } from '~/models/link'
 import { getSession } from '~/session.server'
 
-type LoaderData = { loggedUser?: string }
-type ActionData = { shortenedUrl?: string; error?: string }
+interface LoaderData {
+  loggedUser?: string
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get('Cookie'))
   return json<LoaderData>({ loggedUser: session.get('user')?.email })
+}
+interface ActionData {
+  shortenedUrl?: string
+  error?: string
 }
 
 export const action: ActionFunction = async ({

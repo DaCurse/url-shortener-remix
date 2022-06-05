@@ -20,8 +20,6 @@ import Link from '~/components/Link'
 import { loginUser } from '~/models/user'
 import { commitSession, getSession } from '~/session.server'
 
-type ActionData = { error?: string }
-
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get('Cookie'))
 
@@ -30,6 +28,10 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 
   return json(null)
+}
+
+interface ActionData {
+  error?: string
 }
 
 export const action: ActionFunction = async ({ request }) => {

@@ -14,8 +14,6 @@ import Link from '~/components/Link'
 import { createUser, doesUserExist } from '~/models/user'
 import { getSession } from '~/session.server'
 
-type ActionData = { success?: true; errors?: Record<string, string> }
-
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get('Cookie'))
 
@@ -24,6 +22,11 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 
   return json(null)
+}
+
+interface ActionData {
+  success?: true
+  errors?: Record<string, string>
 }
 
 export const action: ActionFunction = async ({ request }) => {

@@ -12,6 +12,25 @@ import {
 import { Outlet } from '@remix-run/react'
 import ThemeToggle from '~/components/ThemeToggle'
 
+export default function IndexLayout() {
+  return (
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          mt: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Header />
+        <Outlet />
+        <Footer />
+      </Box>
+    </Container>
+  )
+}
+
 function Header() {
   return (
     <Box
@@ -49,23 +68,5 @@ function Footer() {
         </Grid>
       </Grid>
     </Box>
-  )
-}
-export default function IndexLayout() {
-  return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          mt: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Header />
-        <Outlet />
-        <Footer />
-      </Box>
-    </Container>
   )
 }
