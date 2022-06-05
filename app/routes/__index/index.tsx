@@ -59,35 +59,6 @@ export const meta: MetaFunction = () => {
   }
 }
 
-function SubmitButton(props: IconButtonProps) {
-  return (
-    <Tooltip title="Send">
-      <IconButton type="submit" {...props}>
-        <SendIcon />
-      </IconButton>
-    </Tooltip>
-  )
-}
-
-function CopyButton({ data }: { data: string }) {
-  return navigator.clipboard ? (
-    <IconButton onClick={() => navigator.clipboard.writeText(data)}>
-      <ContentCopyIcon />
-    </IconButton>
-  ) : null
-}
-
-function SuccessAlert({ url }: { url: string }) {
-  return (
-    <Alert sx={{ mt: 1 }} severity="success" action={<CopyButton data={url} />}>
-      Link created:{' '}
-      <MuiLink href={url} target="_blank" rel="noreferrer">
-        {url}
-      </MuiLink>
-    </Alert>
-  )
-}
-
 export default function Index() {
   const loaderData = useLoaderData<LoaderData>()
   const actionData = useActionData<ActionData>()
@@ -158,5 +129,34 @@ export default function Index() {
         )}
       </Grid>
     </Grid>
+  )
+}
+
+function SubmitButton(props: IconButtonProps) {
+  return (
+    <Tooltip title="Send">
+      <IconButton type="submit" {...props}>
+        <SendIcon />
+      </IconButton>
+    </Tooltip>
+  )
+}
+
+function CopyButton({ data }: { data: string }) {
+  return navigator.clipboard ? (
+    <IconButton onClick={() => navigator.clipboard.writeText(data)}>
+      <ContentCopyIcon />
+    </IconButton>
+  ) : null
+}
+
+function SuccessAlert({ url }: { url: string }) {
+  return (
+    <Alert sx={{ mt: 1 }} severity="success" action={<CopyButton data={url} />}>
+      Link created:{' '}
+      <MuiLink href={url} target="_blank" rel="noreferrer">
+        {url}
+      </MuiLink>
+    </Alert>
   )
 }
