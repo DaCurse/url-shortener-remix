@@ -64,13 +64,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 interface DocumentProps {
+  themeName: ThemeName
   children: React.ReactNode
 }
 
 const Document = withEmotionCache(
-  ({ children }: DocumentProps, emotionCache) => {
-    const loaderData = useLoaderData<RootLoaderData>()
-    const theme = themes[loaderData?.themeName ?? DEFAULT_THEME]
+  ({ themeName, children }: DocumentProps, emotionCache) => {
+    const theme = themes[themeName]
     const transition = useTransition()
     const clientStyleData = useContext(ClientStyleContext)
 
@@ -121,8 +121,9 @@ const Document = withEmotionCache(
 )
 
 export default function App() {
+  const loaderData = useLoaderData<RootLoaderData>()
   return (
-    <Document>
+    <Document themeName={loaderData.themeName}>
       <Outlet />
     </Document>
   )
@@ -130,7 +131,7 @@ export default function App() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   return (
-    <Document>
+    <Document themeName={DEFAULT_THEME}>
       <Alert severity="error" sx={{ mt: 2 }}>
         <AlertTitle>Error</AlertTitle>
         <Typography>An unknown error occurred!</Typography>
@@ -150,7 +151,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
 export function CatchBoundary() {
   const caught = useCatch()
   return (
-    <Document>
+    <Document themeName={DEFAULT_THEME}>
       <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
         <AlertTitle>
           {caught.status} - {caught.statusText}
