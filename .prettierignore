@@ -1,6 +1,6 @@
-.vscode/
-.cache/
-build/
-server/build
-public/build
-*lock.yaml
+node_modules
+
+/build
+/public/build
+/server/build
+.env

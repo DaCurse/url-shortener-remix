@@ -1,12 +1,12 @@
 import { CacheProvider, ThemeProvider } from '@emotion/react'
 import createEmotionServer from '@emotion/server/create-instance'
 import { CssBaseline } from '@mui/material'
+import type { EntryContext } from '@remix-run/node'
+import { RemixServer } from '@remix-run/react'
 import { renderToString } from 'react-dom/server'
-import type { EntryContext } from 'remix'
-import { RemixServer } from 'remix'
+import { themes } from './common/theme'
+import { getUserTheme } from './common/theme.server'
 import createEmotionCache from './material/create-emotion-cache'
-import { getTheme } from './util/theme'
-import { getUserTheme } from './util/theme.server'
 
 export default async function handleRequest(
   request: Request,
@@ -16,9 +16,7 @@ export default async function handleRequest(
 ) {
   const cache = createEmotionCache()
   const { extractCriticalToChunks } = createEmotionServer(cache)
-
-  const userTheme = await getUserTheme(request)
-  const theme = getTheme(userTheme)
+  const theme = themes[await getUserTheme(request)]
   const MuiRemixServer = () => (
     <CacheProvider value={cache}>
       <ThemeProvider theme={theme}>
@@ -31,7 +29,6 @@ export default async function handleRequest(
   // Render the component to a string.
   const html = renderToString(<MuiRemixServer />)
   // Grab the CSS from emotion
-
   const { styles } = extractCriticalToChunks(html)
   const stylesHTML = styles.reduce((html, { key, ids, css }) => {
     const emotionKey = `${key} ${ids.join(' ')}`

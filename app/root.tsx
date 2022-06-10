@@ -3,13 +3,17 @@ import {
   Alert,
   AlertTitle,
   CssBaseline,
-  Link as MUILink,
+  Typography,
   unstable_useEnhancedEffect as useEnhancedEffect,
 } from '@mui/material'
-import { useContext } from 'react'
-import type { HeadersFunction, LoaderFunction, MetaFunction } from 'remix'
+import type {
+  HeadersFunction,
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+} from '@remix-run/node'
+import { json } from '@remix-run/node'
 import {
-  Link as RemixLink,
   Links,
   LiveReload,
   Meta,
@@ -18,11 +22,24 @@ import {
   ScrollRestoration,
   useCatch,
   useLoaderData,
-} from 'remix'
-import Layout from './components/Layout'
+  useTransition,
+} from '@remix-run/react'
+import nProgress from 'nprogress'
+import nProgressStyles from 'nprogress/nprogress.css'
+import { useContext, useEffect } from 'react'
+import type { ThemeName } from './common/theme'
+import { DEFAULT_THEME, themes } from './common/theme'
+import { getUserTheme } from './common/theme.server'
+import Link from './components/Link'
 import ClientStyleContext from './material/ClientStyleContext.client'
-import { getTheme } from './util/theme'
-import { getUserTheme } from './util/theme.server'
+
+export interface LoaderData {
+  themeName: ThemeName
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+  return json<LoaderData>({ themeName: await getUserTheme(request) })
+}
 
 export const headers: HeadersFunction = () => ({
   'Accept-CH': 'Sec-CH-Prefers-Color-Scheme',
@@ -31,55 +48,61 @@ export const headers: HeadersFunction = () => ({
 export const meta: MetaFunction = () => {
   return {
     title: 'URL Shortener',
+    charSet: 'utf-8',
     description: 'A URL Shortener made with Remix',
+    viewport: 'width=device-width, initial-scale=1',
   }
 }
-
-export const loader: LoaderFunction = async ({ request }) => {
-  return { userTheme: await getUserTheme(request) }
+export const links: LinksFunction = () => {
+  return [
+    { rel: 'stylesheet', href: nProgressStyles },
+    { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
+    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+    {
+      href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap',
+      rel: 'stylesheet',
+    },
+  ]
 }
+
 interface DocumentProps {
+  themeName: ThemeName
   children: React.ReactNode
 }
 
 const Document = withEmotionCache(
-  ({ children }: DocumentProps, emotionCache) => {
-    const { userTheme } = useLoaderData()
-    const theme = getTheme(userTheme)
+  ({ themeName, children }: DocumentProps, emotionCache) => {
+    const theme = themes[themeName]
+    const transition = useTransition()
     const clientStyleData = useContext(ClientStyleContext)
 
-    // Only executed on client
+    useEffect(() => {
+      // When the state is idle then we can complete the progress bar
+      if (transition.state === 'idle') nProgress.done()
+      // And when it's something else it means it's either submitting a form or
+      // waiting for the loaders of the next location so we start it
+      else nProgress.start()
+    }, [transition.state])
+
     useEnhancedEffect(() => {
-      // re-link sheet container
+      // Re-link sheet container
       emotionCache.sheet.container = document.head
-      // re-inject tags
+      // Re-inject tags
       const tags = emotionCache.sheet.tags
       emotionCache.sheet.flush()
       tags.forEach(tag => {
-        // eslint-disable-next-line no-underscore-dangle
         ;(emotionCache.sheet as any)._insertTag(tag)
       })
-      // reset cache to reapply global styles
+      // Reset cache to reapply global styles
       clientStyleData.reset()
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
       <html lang="en">
         <head>
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" />
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width,initial-scale=1" />
-          <meta name="theme-color" content={theme.palette.primary.main} />
-
           <Meta />
           <Links />
-
-          <link
-            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-            rel="stylesheet"
-          />
+          <meta name="theme-color" content={theme.palette.primary.main} />
           <meta
             name="emotion-insertion-point"
             content="emotion-insertion-point"
@@ -88,9 +111,8 @@ const Document = withEmotionCache(
         <body>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Layout>{children}</Layout>
+            {children}
           </ThemeProvider>
-
           <ScrollRestoration />
           <Scripts />
           {process.env.NODE_ENV === 'development' && <LiveReload />}
@@ -101,8 +123,9 @@ const Document = withEmotionCache(
 )
 
 export default function App() {
+  const loaderData = useLoaderData<LoaderData>()
   return (
-    <Document>
+    <Document themeName={loaderData.themeName}>
       <Outlet />
     </Document>
   )
@@ -110,11 +133,18 @@ export default function App() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   return (
-    <Document>
-      <Alert severity="error">
+    <Document themeName={DEFAULT_THEME}>
+      <Alert severity="error" sx={{ mt: 2 }}>
         <AlertTitle>Error</AlertTitle>
-        An unknown error occured!
-        {process.env.NODE_ENV === 'development' && <pre>{error.stack}</pre>}
+        <Typography>An unknown error occurred!</Typography>
+        {process.env.NODE_ENV === 'development' && (
+          <pre style={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>
+            {error.stack}
+          </pre>
+        )}
+        <Link to="/" variant="body1">
+          Go back
+        </Link>
       </Alert>
     </Document>
   )
@@ -123,14 +153,15 @@ export function ErrorBoundary({ error }: { error: Error }) {
 export function CatchBoundary() {
   const caught = useCatch()
   return (
-    <Document>
-      <Alert severity="error">
+    <Document themeName={DEFAULT_THEME}>
+      <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
         <AlertTitle>
           {caught.status} - {caught.statusText}
         </AlertTitle>
-        <MUILink component={RemixLink} to="/">
+        <Typography>{caught.data}</Typography>
+        <Link to="/" variant="body1">
           Go back
-        </MUILink>
+        </Link>
       </Alert>
     </Document>
   )

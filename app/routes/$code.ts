@@ -1,19 +1,24 @@
-import type { LoaderFunction } from 'remix'
-import { redirect } from 'remix'
-import { getLink, incrementLinkVisits } from '~/services/link.service'
+import type { LoaderFunction } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
+import invariant from 'tiny-invariant'
+import { getClientIP } from '~/common/get-client-ip'
+import HttpStatus from '~/common/http-status'
+import { getLink } from '~/models/link'
+import { createVisit } from '~/models/visit'
 
-const NotFoundResponse = new Response('Not Found', {
-  status: 404,
-})
-
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params, context }) => {
   const { code } = params
-  if (!code) throw NotFoundResponse
+  invariant(typeof code === 'string', 'code is required')
 
   const link = await getLink(code)
-  if (!link) throw NotFoundResponse
+  if (!link)
+    throw new Response('Link not found', {
+      status: HttpStatus.NOT_FOUND,
+    })
 
-  incrementLinkVisits(code)
+  const userAgent = request.headers.get('User-Agent') ?? 'unknown'
+  const ipAddress = getClientIP(request) ?? context.clientIP
+  createVisit(link.id, userAgent, ipAddress)
 
   return redirect(link.url)
 }

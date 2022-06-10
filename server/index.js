@@ -2,47 +2,92 @@ const path = require('path')
 const express = require('express')
 const compression = require('compression')
 const morgan = require('morgan')
-const { createRequestHandler } = require('@remix-run/express')
+const {
+  createRequestHandler: createRemixRequestHandler,
+} = require('@remix-run/express')
+const { startCronJobs } = require('./cron')
 
-const MODE = process.env.NODE_ENV
 const BUILD_DIR = path.join(process.cwd(), 'server/build')
 
 const app = express()
+
 app.use(compression())
 
-// You may want to be more aggressive with this caching
-app.use(express.static('public', { maxAge: '1h' }))
+// http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
+app.disable('x-powered-by')
 
-// Remix fingerprints its assets so we can cache forever
-app.use(express.static('public/build', { immutable: true, maxAge: '1y' }))
-
-app.use(morgan('tiny'))
-app.all(
-  '*',
-  MODE === 'production'
-    ? createRequestHandler({ build: require('./build') })
-    : (req, res, next) => {
-        purgeRequireCache()
-        const build = require('./build')
-        return createRequestHandler({ build, mode: MODE })(req, res, next)
-      }
+// Remix fingerprints its assets so we can cache forever.
+app.use(
+  '/build',
+  express.static('public/build', { immutable: true, maxAge: '1y' })
 )
 
-const port = process.env.PORT || 3000
-app.listen(port, () => {
-  console.log(`Express server listening on port ${port}`)
+// Caching for static assets.
+app.use(express.static('public', { maxAge: '1w' }))
+
+app.use(morgan('tiny'))
+
+// Cleans up URLs that end with a slash, this also prevents Remix from throwing
+// an exception when the URL contains just slashes.
+app.use((req, res, next) => {
+  if (req.path.endsWith('/') && req.path.length > 1) {
+    const query = req.url.slice(req.path.length)
+    const safePath = req.path.slice(0, -1).replace(/\/+/g, '/')
+    res.redirect(301, safePath + query)
+  } else {
+    next()
+  }
 })
 
-////////////////////////////////////////////////////////////////////////////////
+app.all(
+  '*',
+  process.env.NODE_ENV === 'development'
+    ? (req, res, next) => {
+        purgeRequireCache()
+        return createRequestHandler()(req, res, next)
+      }
+    : createRequestHandler()
+)
+const port = process.env.PORT || 3000
+
+app.listen(port, () => {
+  console.log(`Express server listening on port ${port}`)
+  startCronJobs()
+})
+
+/**
+ *  Purge require cache on requests for "server side HMR". This won't let you have
+ *  in-memory objects between requests in development, alternatively you can set up
+ *  nodemon/pm2-dev to restart the server on file changes, but then you'll have to
+ *  reconnect to databases/etc on each change. We prefer the DX of this, so we've
+ *  included it for you by default
+ */
 function purgeRequireCache() {
-  // purge require cache on requests for "server side HMR" this won't let
-  // you have in-memory objects between requests in development,
-  // alternatively you can set up nodemon/pm2-dev to restart the server on
-  // file changes, we prefer the DX of this though, so we've included it
-  // for you by default
-  for (const key in require.cache) {
+  for (let key in require.cache) {
     if (key.startsWith(BUILD_DIR)) {
       delete require.cache[key]
     }
   }
+}
+
+/**
+ * Creates the Remix request handler
+ */
+function createRequestHandler() {
+  return createRemixRequestHandler({
+    getLoadContext,
+    build: require(BUILD_DIR),
+    mode: process.env.NODE_ENV,
+  })
+}
+
+/**
+ * Remix will call this function to get additional context for the current
+ * request in loaders.
+ * @param {express.Request} req
+ * @param {express.Response} _res
+ * @returns {object}
+ */
+function getLoadContext(req, _res) {
+  return { clientIP: req.socket.remoteAddress }
 }
